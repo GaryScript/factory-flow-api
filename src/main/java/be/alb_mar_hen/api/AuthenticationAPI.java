@@ -43,22 +43,26 @@ public class AuthenticationAPI{
 	    try {
 	        connection = FactoryFlowConnection.getInstance();
 
-	        String call = "{CALL sp_check_user_authentication(?, ?, ?, ?, ?)}";
+	        // Appel à la procédure stockée
+	        String call = "{CALL sp_check_user_authentication(?, ?, ?, ?, ?, ?)}";
 	        stmt = connection.prepareCall(call);
 	        stmt.setString(1, matricule);
 	        stmt.setString(2, password);
 	        stmt.registerOutParameter(3, java.sql.Types.VARCHAR); // firstName
 	        stmt.registerOutParameter(4, java.sql.Types.VARCHAR); // lastName
 	        stmt.registerOutParameter(5, java.sql.Types.VARCHAR); // role
+	        stmt.registerOutParameter(6, java.sql.Types.INTEGER); // employee_id
 
 	        stmt.execute();
 
+	        // Récupération des résultats
 	        String firstName = stmt.getString(3);
 	        String lastName = stmt.getString(4);
 	        String role = stmt.getString(5);
+	        int employeeId = stmt.getInt(6);
 
-	        // build the json we're returning
 	        JSONObject responseJson = new JSONObject();
+	        responseJson.put("employeeId", employeeId); 
 	        responseJson.put("matricule", matricule);
 	        responseJson.put("firstName", firstName);
 	        responseJson.put("lastName", lastName);
@@ -69,7 +73,6 @@ public class AuthenticationAPI{
 	    } catch (SQLException e) {
 	        String errorMessage;
 
-	        // manage errors
 	        switch (e.getErrorCode()) {
 	            case 20001:
 	                errorMessage = "Invalid matricule or password.";
@@ -86,7 +89,6 @@ public class AuthenticationAPI{
 	                .build();
 
 	    } finally {
-	        // close ressources
 	        try {
 	            if (stmt != null) stmt.close();
 	            if (connection != null) connection.close();
@@ -96,6 +98,8 @@ public class AuthenticationAPI{
 	    }
 	}
 
+
+	// to check if the api is responding
 	@GET
     @Path("/status")
     @Produces(MediaType.APPLICATION_JSON)
