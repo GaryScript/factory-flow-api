@@ -43,7 +43,6 @@ public class AuthenticationAPI{
 	    try {
 	        connection = FactoryFlowConnection.getInstance();
 
-	        // Appel à la procédure stockée
 	        String call = "{CALL sp_check_user_authentication(?, ?, ?, ?, ?, ?)}";
 	        stmt = connection.prepareCall(call);
 	        stmt.setString(1, matricule);
@@ -55,7 +54,6 @@ public class AuthenticationAPI{
 
 	        stmt.execute();
 
-	        // Récupération des résultats
 	        String firstName = stmt.getString(3);
 	        String lastName = stmt.getString(4);
 	        String role = stmt.getString(5);

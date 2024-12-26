@@ -57,5 +57,5 @@ public class FactoryFlowConnection {
         } catch (SQLException ex) {
             System.out.println("Error closing the connection: " + ex.getMessage());
         }
-    }
+    }   
 }
