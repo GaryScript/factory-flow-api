@@ -1,4 +1,4 @@
-package be.alb_mar_hen.database;
+package be.alb_mar_hen.daos;
 
 import java.io.IOException;
 import java.io.InputStream;

@@ -10,6 +10,7 @@ import be.alb_mar_hen.formatters.StringFormatter;
 import be.alb_mar_hen.javabeans.Employee;
 import be.alb_mar_hen.javabeans.MaintenanceResponsable;
 import be.alb_mar_hen.javabeans.MaintenanceWorker;
+import be.alb_mar_hen.validators.DateValidator;
 import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;
@@ -186,13 +187,6 @@ public abstract class Employee implements Serializable{
 	        && Objects.equals(matricule, other.matricule)
 	        && Objects.equals(password, other.password);
 	}
-	
-	public static String authenticateEmployee(String matricule, String password) {
-        EmployeeDAO employeeDAO = new EmployeeDAO();
-        String response = employeeDAO.authenticateEmployee(matricule, password);
-        
-        return response;
-    }
 	
 	public static Employee createEmployeeFromJson(
 	        String role,
