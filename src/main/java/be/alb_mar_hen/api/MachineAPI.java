@@ -109,7 +109,7 @@ public class MachineAPI {
         } finally {
             try {
                 if (stmt != null) stmt.close();
-                if (connection != null) connection.close();
+                //if (connection != null) connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
