@@ -76,7 +76,6 @@ public class MachineAPI {
 	                    Optional.ofNullable((Integer) attributes[6]),
 	                    ZoneColor.valueOf((String) attributes[8]), // assuming ZoneColor is an enum
 	                    (String) attributes[7],
-	                    new HashSet<>(),
 	                    Optional.ofNullable((Integer) attributes[9]),
 	                    (String) attributes[10],
 	                    new NumericValidator(),
