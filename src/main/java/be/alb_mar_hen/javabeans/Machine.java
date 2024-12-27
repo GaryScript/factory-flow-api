@@ -141,9 +141,6 @@ public class Machine implements Serializable{
 		}
 		
 		boolean added = zones.add(zone);
-		if (added) {
-			zone.addMachine(this);
-		}
 		
 		return added;
 	}
