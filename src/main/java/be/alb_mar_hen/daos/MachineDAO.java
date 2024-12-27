@@ -185,7 +185,7 @@ public class MachineDAO implements DAO<Machine>{
 
         return machines;
     }
-
+	
 	@Override
 	public Machine find() {
 		// TODO Auto-generated method stub
