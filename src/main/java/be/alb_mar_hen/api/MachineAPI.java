@@ -5,7 +5,11 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Struct;
 import java.sql.Types;
-	
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
@@ -16,103 +20,104 @@ import javax.ws.rs.core.Response.Status;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import be.alb_mar_hen.database.FactoryFlowConnection;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import be.alb_mar_hen.daos.FactoryFlowConnection;
+import be.alb_mar_hen.enumerations.MachineStatus;
+import be.alb_mar_hen.enumerations.ZoneColor;
+import be.alb_mar_hen.models.Machine;
+import be.alb_mar_hen.models.Maintenance;
+import be.alb_mar_hen.models.MaintenanceResponsable;
+import be.alb_mar_hen.models.MaintenanceWorker;
+import be.alb_mar_hen.models.Site;
+import be.alb_mar_hen.models.Zone;
+import be.alb_mar_hen.validators.NumericValidator;
+import be.alb_mar_hen.validators.ObjectValidator;
+import be.alb_mar_hen.validators.StringValidator;
 
 @Path("/machines")
 public class MachineAPI {
 
-    @GET
-    @Path("/getAll")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllMachines() {
-        Connection connection = null;
-        CallableStatement stmt = null;
+	@GET
+	@Path("/getAll")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getAllMachines() {
+	    Connection connection = null;
+	    CallableStatement stmt = null;
 
-        try {
-            connection = FactoryFlowConnection.getInstance();
+	    try {
+	        connection = FactoryFlowConnection.getInstance();
 
-            // call the sql procedure
-            String call = "{CALL fetch_machine_data(?)}";
-            stmt = connection.prepareCall(call);
-            stmt.registerOutParameter(1, Types.ARRAY, "MACHINE_PACKAGE.MACHINE_DATA_TAB");
-            stmt.execute();
+	        // call the sql procedure
+	        String call = "{CALL fetch_machine_data(?)}";
+	        stmt = connection.prepareCall(call);
+	        stmt.registerOutParameter(1, Types.ARRAY, "MACHINE_PACKAGE.MACHINE_DATA_TAB");
+	        stmt.execute();
 
-            // claims data
-            java.sql.Array array = stmt.getArray(1);
-            Object[] results = (Object[]) array.getArray();
+	        // claims data
+	        java.sql.Array array = stmt.getArray(1);
+	        Object[] results = (Object[]) array.getArray();
 
-            // build the JSON response
-            JSONArray machinesJson = new JSONArray();
-            for (Object result : results) {
-                Struct row = (Struct) result;
-                Object[] attributes = row.getAttributes();
+	        // Create a list to hold the machines
+	        List<Machine> machines = new ArrayList<>();
 
-                // json object for each machine
-                JSONObject machineJson = new JSONObject();
-                machineJson.put("machineId", attributes[0]);
-                machineJson.put("machineTypeName", attributes[1]);
-                machineJson.put("machineTypePrice", attributes[2]);
-                machineJson.put("machineTypeDaysBeforeMaintenance", attributes[3]);
-                machineJson.put("machineName", attributes[4]);
-                machineJson.put("machineStatus", attributes[5]);
+	        // Loop through the results and map them to objects
+	        for (Object result : results) {
+	            Struct row = (Struct) result;
+	            Object[] attributes = row.getAttributes();
 
-                JSONObject zoneJson = new JSONObject();
-                zoneJson.put("zoneId", attributes[6]);
-                zoneJson.put("zoneName", attributes[7]);
-                zoneJson.put("zoneColor", attributes[8]);
+	            // Create Machine object using the constructor
+	            Machine machine = new Machine(
+	                Optional.ofNullable((Integer) attributes[0]), // id
+	                (String) attributes[1], // type
+	                MachineStatus.valueOf((String) attributes[2]), // status (assuming the status is of MachineStatus enum)
+	                (String) attributes[4], // name
+	                new Zone( // zone object
+	                    Optional.ofNullable((Integer) attributes[6]),
+	                    ZoneColor.valueOf((String) attributes[8]), // assuming ZoneColor is an enum
+	                    (String) attributes[7],
+	                    new HashSet<>(),
+	                    Optional.ofNullable((Integer) attributes[9]),
+	                    (String) attributes[10],
+	                    new NumericValidator(),
+	                    new ObjectValidator(),
+	                    new StringValidator()
+	                ),
+	                Optional.ofNullable((Integer) attributes[3]), // machineTypeId
+	                (String) attributes[11], // machineTypeName
+	                (Double) attributes[12], // machineTypePrice
+	                (Integer) attributes[13], // machineTypeDaysBeforeMaintenance
+	                new HashSet<>(), // maintenances (empty for now)
+	                new HashSet<>(), // zones (empty for now)
+	                new NumericValidator(),
+	                new ObjectValidator(),
+	                new StringValidator()
+	            );
 
-                JSONObject siteJson = new JSONObject();
-                siteJson.put("siteId", attributes[9]);
-                siteJson.put("siteCity", attributes[10]);
+	            // Add the machine to the list
+	            machines.add(machine);
+	        }
 
-                JSONObject maintenanceJson = new JSONObject();
-                maintenanceJson.put("maintenanceId", attributes[11]);
-                maintenanceJson.put("maintenanceStartDate", attributes[12]);
-                maintenanceJson.put("maintenanceEndDate", attributes[13]);
-                maintenanceJson.put("maintenanceDuration", attributes[14]);
-                maintenanceJson.put("maintenanceReport", attributes[15]);
-                maintenanceJson.put("maintenanceStatus", attributes[16]);
+	        // Use ObjectMapper to convert the list to JSON
+	        ObjectMapper mapper = new ObjectMapper();
+	        String jsonResponse = mapper.writeValueAsString(machines);
 
-                JSONObject responsableJson = new JSONObject();
-                responsableJson.put("maintenanceResponsableId", attributes[17]);
-                responsableJson.put("maintenanceResponsableMatricule", attributes[18]);
-                responsableJson.put("maintenanceResponsablePassword", attributes[19]);
-                responsableJson.put("maintenanceResponsableFirstName", attributes[20]);
-                responsableJson.put("maintenanceResponsableLastName", attributes[21]);
+	        // Return the response with machines data in JSON format
+	        return Response.status(Status.OK).entity(jsonResponse).build();
 
-                JSONObject workerJson = new JSONObject();
-                workerJson.put("maintenanceWorkerId", attributes[22]);
-                workerJson.put("maintenanceWorkerMatricule", attributes[23]);
-                workerJson.put("maintenanceWorkerPassword", attributes[24]);
-                workerJson.put("maintenanceWorkerFirstName", attributes[25]);
-                workerJson.put("maintenanceWorkerLastName", attributes[26]);
+	    } catch (SQLException | JsonProcessingException e) {
+	        e.printStackTrace();
+	        return Response.status(Status.INTERNAL_SERVER_ERROR)
+	                .entity("{\"error\": \"An error occurred while fetching machines: " + e.getMessage() + "\"}")
+	                .build();
+	    } finally {
+	        try {
+	            if (stmt != null) stmt.close();
+	            // if (connection != null) connection.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+	}
 
-                // add sub-objects to the main object
-                machineJson.put("zone", zoneJson);
-                machineJson.put("site", siteJson);
-                machineJson.put("maintenance", maintenanceJson);
-                machineJson.put("maintenanceResponsable", responsableJson);
-                machineJson.put("maintenanceWorker", workerJson);
-
-                // add the machine to the array
-                machinesJson.put(machineJson);
-            }
-
-            // return the response with the machines data in JSON format 
-            return Response.status(Status.OK).entity(machinesJson.toString()).build();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return Response.status(Status.INTERNAL_SERVER_ERROR)
-                    .entity("{\"error\": \"An error occurred while fetching machines: " + e.getMessage() + "\"}")
-                    .build();
-        } finally {
-            try {
-                if (stmt != null) stmt.close();
-                //if (connection != null) connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-    }
 }
