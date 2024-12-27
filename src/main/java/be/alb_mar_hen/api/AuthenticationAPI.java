@@ -16,7 +16,7 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.json.JSONObject;
 
-import be.alb_mar_hen.database.FactoryFlowConnection;
+import be.alb_mar_hen.daos.FactoryFlowConnection;
 
 
 @Path("/login")
