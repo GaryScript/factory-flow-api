@@ -45,146 +45,165 @@ public class MachineDAO implements DAO<Machine>{
 	
 	@Override
 	public List<Machine> findall() throws SQLException {
-        List<Machine> machines = new ArrayList<>();
-        CallableStatement stmt = null;
+	    List<Machine> machines = new ArrayList<>();
+	    CallableStatement stmt = null;
 
-        try {
-            String call = "{CALL fetch_machine_data(?)}";
-            stmt = connection.prepareCall(call);
-            stmt.registerOutParameter(1, Types.ARRAY, "MACHINE_PACKAGE.MACHINE_DATA_TAB");
-            stmt.execute();
+	    try {
+	        String call = "{CALL fetch_machine_data(?)}";
+	        stmt = connection.prepareCall(call);
+	        stmt.registerOutParameter(1, Types.ARRAY, "MACHINE_PACKAGE.MACHINE_DATA_TAB");
+	        stmt.execute();
 
-            java.sql.Array array = stmt.getArray(1);
-            Object[] results = (Object[]) array.getArray();
+	        // Récupérer le tableau principal de machines
+	        java.sql.Array machineArray = stmt.getArray(1);
+	        Object[] machineResults = (Object[]) machineArray.getArray();
 
-            for (Object result : results) {
-                Struct row = (Struct) result;
-                Object[] attributes = row.getAttributes();
+	        for (Object machineResult : machineResults) {
+	            Struct machineRow = (Struct) machineResult;
+	            Object[] machineAttributes = machineRow.getAttributes();
 
-                Optional<Integer> machineId = Optional.ofNullable((Integer) attributes[0]);
-                String machineTypeName = (String) attributes[1];
-                double machineTypePrice = (Double) attributes[2];
-                int machineTypeDaysBeforeMaintenance = (Integer) attributes[3];
-                String machineName = (String) attributes[4];
-                MachineStatus status = MachineStatus.valueOf((String) attributes[5]);
-                
-                // Zone et Site
-                Optional<Integer> zoneId = Optional.ofNullable((Integer) attributes[6]);
-                String zoneName = (String) attributes[7];
-                ZoneColor zoneColor = ZoneColor.valueOf((String) attributes[8]);
-                Optional<Integer> siteId = Optional.ofNullable((Integer) attributes[9]);
-                String siteCity = (String) attributes[10];
-                
-                // Maintenance
-                Optional<Integer> maintenanceId = Optional.ofNullable((Integer) attributes[11]);
-                LocalDateTime maintenanceStartDate = Optional.ofNullable((Date) attributes[12])
-                        .map(date -> date.toLocalDate().atStartOfDay()) // Convert to LocalDate, then to LocalDateTime
-                        .orElse(null);
-                Optional<LocalDateTime> maintenanceEndDate = Optional.ofNullable((Date) attributes[13])
-                        .map(date -> date.toLocalDate().atStartOfDay()); // Convert to LocalDate, then to LocalDateTime
+	            // Récupérer les attributs de la machine
+	            Optional<Integer> machineId = Optional.ofNullable((Integer) machineAttributes[0]);
+	            String machineTypeName = (String) machineAttributes[1];
+	            double machineTypePrice = (Double) machineAttributes[2];
+	            int machineTypeDaysBeforeMaintenance = (Integer) machineAttributes[3];
+	            String machineName = (String) machineAttributes[4];
+	            MachineStatus status = MachineStatus.valueOf((String) machineAttributes[5]);
 
-                Optional<Integer> maintenanceDuration = Optional.ofNullable((Integer) attributes[14]);
-                Optional<String> maintenanceReport = Optional.ofNullable((String) attributes[15]);
-                MaintenanceStatus maintenanceStatus = MaintenanceStatus.valueOf((String) attributes[16]);
-                
-                // Maintenance Responsable
-                Optional<Integer> maintenanceResponsableId = Optional.ofNullable((Integer) attributes[17]);
-                String maintenanceResponsableMatricule = (String) attributes[18];
-                String maintenanceResponsablePassword = (String) attributes[19];
-                String maintenanceResponsableFirstName = (String) attributes[20];
-                String maintenanceResponsableLastName = (String) attributes[21];
+	            // Zone et Site
+	            Optional<Integer> zoneId = Optional.ofNullable((Integer) machineAttributes[6]);
+	            String zoneName = (String) machineAttributes[7];
+	            ZoneColor zoneColor = ZoneColor.valueOf((String) machineAttributes[8]);
+	            Optional<Integer> siteId = Optional.ofNullable((Integer) machineAttributes[9]);
+	            String siteCity = (String) machineAttributes[10];
 
-                // Maintenance Worker
-                Optional<Integer> maintenanceWorkerId = Optional.ofNullable((Integer) attributes[22]);
-                String maintenanceWorkerMatricule = (String) attributes[23];
-                String maintenanceWorkerPassword = (String) attributes[24];
-                String maintenanceWorkerFirstName = (String) attributes[25];
-                String maintenanceWorkerLastName = (String) attributes[26];
+	            // Construire l'objet Zone
+	            NumericValidator numericValidator = new NumericValidator();
+	            StringValidator stringValidator = new StringValidator();
+	            ObjectValidator objectValidator = new ObjectValidator();
+	            StringFormatter stringFormatter = new StringFormatter();
 
-                NumericValidator numericValidator = new NumericValidator();
-                StringValidator stringValidator = new StringValidator();
-                ObjectValidator objectValidator = new ObjectValidator();
-                StringFormatter stringFormatter = new StringFormatter();
+	            Zone zone = new Zone(
+	                zoneId,
+	                zoneColor,
+	                zoneName,
+	                siteId,
+	                siteCity,
+	                numericValidator,
+	                objectValidator,
+	                stringValidator
+	            );
 
-                Zone zone = new Zone(
-                    zoneId, 
-                    zoneColor, 
-                    zoneName, 
-                    siteId, 
-                    siteCity, 
-                    numericValidator, 
-                    objectValidator, 
-                    stringValidator
-                );
+	            // Récupérer le tableau des maintenances
+	            java.sql.Array maintenanceArray = (java.sql.Array) machineAttributes[11];
+	            Object[] maintenanceResults = maintenanceArray != null ? (Object[]) maintenanceArray.getArray() : new Object[0];
 
-                Site site = zone.getSite();
+	            List<Maintenance> maintenances = new ArrayList<>();
 
-                MaintenanceResponsable maintenanceResponsable = new MaintenanceResponsable(
-                    maintenanceResponsableId, 
-                    maintenanceResponsableMatricule, 
-                    maintenanceResponsablePassword, 
-                    maintenanceResponsableFirstName, 
-                    maintenanceResponsableLastName, 
-                    objectValidator, 
-                    stringValidator, 
-                    numericValidator, 
-                    stringFormatter
-                );
+	            for (Object maintenanceResult : maintenanceResults) {
+	                Struct maintenanceRow = (Struct) maintenanceResult;
+	                Object[] maintenanceAttributes = maintenanceRow.getAttributes();
 
-                MaintenanceWorker maintenanceWorker = new MaintenanceWorker(
-                    maintenanceWorkerId, 
-                    maintenanceWorkerMatricule, 
-                    maintenanceWorkerPassword, 
-                    maintenanceWorkerFirstName, 
-                    maintenanceWorkerLastName, 
-                    stringValidator, 
-                    numericValidator, 
-                    stringFormatter, 
-                    objectValidator
-                );
-                
-                Machine machine = new Machine(
-                        machineId, 
-                        machineTypeName, 
-                        status, 
-                        machineName, 
-                        zone,
-                        Optional.ofNullable((Integer) attributes[0]),
-                        machineTypeName, 
-                        machineTypePrice, 
-                        machineTypeDaysBeforeMaintenance, 
-                        numericValidator, 
-                        objectValidator, 
-                        stringValidator
-                    );
+	                // Récupérer les attributs de la maintenance
+	                Optional<Integer> maintenanceId = Optional.ofNullable((Integer) maintenanceAttributes[0]);
+	                LocalDateTime maintenanceStartDate = Optional.ofNullable((Date) maintenanceAttributes[1])
+	                    .map(date -> date.toLocalDate().atStartOfDay())
+	                    .orElse(null);
+	                Optional<LocalDateTime> maintenanceEndDate = Optional.ofNullable((Date) maintenanceAttributes[2])
+	                    .map(date -> date.toLocalDate().atStartOfDay());
+	                Optional<Integer> maintenanceDuration = Optional.ofNullable((Integer) maintenanceAttributes[3]);
+	                Optional<String> maintenanceReport = Optional.ofNullable((String) maintenanceAttributes[4]);
+	                MaintenanceStatus maintenanceStatus = MaintenanceStatus.valueOf((String) maintenanceAttributes[5]);
 
-                Maintenance maintenance = new Maintenance(
-                    maintenanceId, 
-                    maintenanceStartDate, 
-                    maintenanceEndDate, 
-                    maintenanceDuration, 
-                    maintenanceReport, 
-                    maintenanceStatus, 
-                    machine, 
-                    maintenanceWorker, 
-                    maintenanceResponsable, 
-                    numericValidator, 
-                    stringValidator, 
-                    objectValidator,
-                    new DateValidator()
-                );
-                
-                machines.add(machine);
-            }
+	                // Maintenance Responsable
+	                Optional<Integer> maintenanceResponsableId = Optional.ofNullable((Integer) maintenanceAttributes[6]);
+	                String maintenanceResponsableMatricule = (String) maintenanceAttributes[7];
+	                String maintenanceResponsablePassword = (String) maintenanceAttributes[8];
+	                String maintenanceResponsableFirstName = (String) maintenanceAttributes[9];
+	                String maintenanceResponsableLastName = (String) maintenanceAttributes[10];
 
-        } catch (SQLException e) {
-            throw new SQLException("Error while fetching machines: " + e.getMessage(), e);
-        } finally {
-            if (stmt != null) stmt.close();
-        }
+	                MaintenanceResponsable maintenanceResponsable = new MaintenanceResponsable(
+	                    maintenanceResponsableId,
+	                    maintenanceResponsableMatricule,
+	                    maintenanceResponsablePassword,
+	                    maintenanceResponsableFirstName,
+	                    maintenanceResponsableLastName,
+	                    objectValidator,
+	                    stringValidator,
+	                    numericValidator,
+	                    stringFormatter
+	                );
 
-        return machines;
-    }
+	                // Maintenance Worker
+	                Optional<Integer> maintenanceWorkerId = Optional.ofNullable((Integer) maintenanceAttributes[11]);
+	                String maintenanceWorkerMatricule = (String) maintenanceAttributes[12];
+	                String maintenanceWorkerPassword = (String) maintenanceAttributes[13];
+	                String maintenanceWorkerFirstName = (String) maintenanceAttributes[14];
+	                String maintenanceWorkerLastName = (String) maintenanceAttributes[15];
+
+	                MaintenanceWorker maintenanceWorker = new MaintenanceWorker(
+	                    maintenanceWorkerId,
+	                    maintenanceWorkerMatricule,
+	                    maintenanceWorkerPassword,
+	                    maintenanceWorkerFirstName,
+	                    maintenanceWorkerLastName,
+	                    stringValidator,
+	                    numericValidator,
+	                    stringFormatter,
+	                    objectValidator
+	                );
+
+	                Maintenance maintenance = new Maintenance(
+	                    maintenanceId,
+	                    maintenanceStartDate,
+	                    maintenanceEndDate,
+	                    maintenanceDuration,
+	                    maintenanceReport,
+	                    maintenanceStatus,
+	                    null, // La machine sera associée après
+	                    maintenanceWorker,
+	                    maintenanceResponsable,
+	                    numericValidator,
+	                    stringValidator,
+	                    objectValidator,
+	                    new DateValidator()
+	                );
+
+	                maintenances.add(maintenance);
+	            }
+
+	            // Construire la machine
+	            Machine machine = new Machine(
+	                machineId,
+	                machineTypeName,
+	                status,
+	                machineName,
+	                zone,
+	                Optional.ofNullable((Integer) machineAttributes[0]),
+	                machineTypeName,
+	                machineTypePrice,
+	                machineTypeDaysBeforeMaintenance,
+	                numericValidator,
+	                objectValidator,
+	                stringValidator
+	            );
+
+	            // Associer les maintenances à la machine
+	            for (Maintenance maintenance : maintenances) {
+	                maintenance.setMachine(machine);
+	            }
+
+	            machines.add(machine);
+	        }
+
+	    } catch (SQLException e) {
+	        throw new SQLException("Error while fetching machines: " + e.getMessage(), e);
+	    } finally {
+	        if (stmt != null) stmt.close();
+	    }
+
+	    return machines;
+	}
 	
 	@Override
 	public Machine find() {
