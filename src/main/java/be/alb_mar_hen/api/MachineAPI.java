@@ -1,5 +1,6 @@
 package be.alb_mar_hen.api;
 
+import java.sql.Connection;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -21,7 +22,9 @@ public class MachineAPI {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllMachines() {
         try {
-            MachineDAO machineDAO = new MachineDAO(FactoryFlowConnection.getInstance());
+        	Connection connection = FactoryFlowConnection.getInstance();
+        	System.out.println("connection: " + connection);
+            MachineDAO machineDAO = new MachineDAO(connection);
             List<Machine> machines = machineDAO.findall();
 
             ObjectMapper objectMapper = new ObjectMapper();

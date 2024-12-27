@@ -1,5 +1,6 @@
 package be.alb_mar_hen.daos;
 
+import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -63,7 +64,9 @@ public class MachineDAO implements DAO<Machine>{
 	            Object[] machineAttributes = machineRow.getAttributes();
 
 	            // Récupérer les attributs de la machine
-	            Optional<Integer> machineId = Optional.ofNullable((Integer) machineAttributes[0]);
+	            Optional<BigDecimal> machineIdBigDecimal = Optional.ofNullable((BigDecimal) machineAttributes[0]);
+	            Optional<Integer> machineId = machineIdBigDecimal.map(BigDecimal::intValue);
+
 	            String machineTypeName = (String) machineAttributes[1];
 	            double machineTypePrice = (Double) machineAttributes[2];
 	            int machineTypeDaysBeforeMaintenance = (Integer) machineAttributes[3];
@@ -105,7 +108,10 @@ public class MachineDAO implements DAO<Machine>{
 	                Object[] maintenanceAttributes = maintenanceRow.getAttributes();
 
 	                // Récupérer les attributs de la maintenance
-	                Optional<Integer> maintenanceId = Optional.ofNullable((Integer) maintenanceAttributes[0]);
+	                Optional<BigDecimal> maintenanceIdBigDecimal = Optional.ofNullable((BigDecimal) maintenanceAttributes[0]);
+	                Optional<Integer> maintenanceId = maintenanceIdBigDecimal.map(BigDecimal::intValue);
+
+
 	                LocalDateTime maintenanceStartDate = Optional.ofNullable((Date) maintenanceAttributes[1])
 	                    .map(date -> date.toLocalDate().atStartOfDay())
 	                    .orElse(null);
@@ -154,7 +160,7 @@ public class MachineDAO implements DAO<Machine>{
 	                );
 
 	                Maintenance maintenance = new Maintenance(
-	                    maintenanceId,
+	                	maintenanceId,
 	                    maintenanceStartDate,
 	                    maintenanceEndDate,
 	                    maintenanceDuration,
@@ -197,6 +203,7 @@ public class MachineDAO implements DAO<Machine>{
 	        }
 
 	    } catch (SQLException e) {
+	    	e.printStackTrace();
 	        throw new SQLException("Error while fetching machines: " + e.getMessage(), e);
 	    } finally {
 	        if (stmt != null) stmt.close();
