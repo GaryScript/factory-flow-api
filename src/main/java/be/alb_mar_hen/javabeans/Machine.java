@@ -6,6 +6,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import be.alb_mar_hen.enumerations.MachineStatus;
 import be.alb_mar_hen.javabeans.Machine;
 import be.alb_mar_hen.javabeans.MachineType;
@@ -28,7 +32,10 @@ public class Machine implements Serializable{
 	private String name;
 	
 	// Relations
+	
+	@JsonManagedReference
 	private Set<Maintenance> maintenances;
+	
 	private Set<Zone> zones;
 	private MachineType machineType;
 	

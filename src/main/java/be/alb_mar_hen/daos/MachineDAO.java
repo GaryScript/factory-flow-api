@@ -102,7 +102,6 @@ public class MachineDAO implements DAO<Machine>{
 	                Object[] maintenanceAttributes = maintenanceRow.getAttributes();
 
 	                int maintenanceId = Conversion.extractInt(maintenanceAttributes[0]);
-	                System.out.println("maintenanceAttributes[1]: " + maintenanceAttributes[1]);
 	                LocalDateTime maintenanceStartDate = Conversion.extractLocalDateTime(maintenanceAttributes[1]);
 	                LocalDateTime maintenanceEndDate = Conversion.extractLocalDateTime(maintenanceAttributes[2]);
 	                int maintenanceDuration = Conversion.extractInt(maintenanceAttributes[3]);
@@ -150,16 +149,7 @@ public class MachineDAO implements DAO<Machine>{
 	                    stringFormatter,
 	                    objectValidator
 	                );
-	                
-	                System.out.println(maintenanceId);
-	                System.out.println(maintenanceStartDate);
-	                System.out.println(maintenanceEndDate);
-	                System.out.println(maintenanceDuration);
-	                System.out.println(maintenanceReport);
-	                System.out.println(maintenanceStatus);
-	                System.out.println(maintenanceWorker);
-	                System.out.println(maintenanceResponsable);
-	                
+
 	                Maintenance maintenance = new Maintenance(
 	                    Optional.of(maintenanceId),
 	                    maintenanceStartDate,
@@ -195,11 +185,14 @@ public class MachineDAO implements DAO<Machine>{
 	            );
 
 	            for (Maintenance maintenance : maintenances) {
+	            	Optional<String> report = Optional.of("ddddddddddddddddddddddddddddddddddddd");
+	            	maintenance.setReport(report);
 	                maintenance.setMachine(machine);
 	                machine.addMaintenance(maintenance);
 	            }
 
 	            machines.add(machine);
+	            System.out.println(machine.getMaintenances().toString());
 	        }
 
 	    } catch (SQLException e) {

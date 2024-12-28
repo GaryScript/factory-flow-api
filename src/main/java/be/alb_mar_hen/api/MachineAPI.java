@@ -10,6 +10,8 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+
 import be.alb_mar_hen.daos.FactoryFlowConnection;
 import be.alb_mar_hen.daos.MachineDAO;
 import be.alb_mar_hen.javabeans.Machine;
@@ -23,11 +25,11 @@ public class MachineAPI {
     public Response getAllMachines() {
         try {
         	Connection connection = FactoryFlowConnection.getInstance();
-        	System.out.println("connection: " + connection);
             MachineDAO machineDAO = new MachineDAO(connection);
             List<Machine> machines = machineDAO.findall();
 
             ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new Jdk8Module());
 
             String machinesJson = objectMapper.writeValueAsString(machines);
 
