@@ -7,11 +7,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import be.alb_mar_hen.enumerations.MaintenanceStatus;
-import be.alb_mar_hen.javabeans.Machine;
 import be.alb_mar_hen.javabeans.Maintenance;
-import be.alb_mar_hen.javabeans.MaintenanceResponsable;
-import be.alb_mar_hen.javabeans.MaintenanceWorker;
 import be.alb_mar_hen.validators.DateValidator;
 import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
@@ -20,7 +19,7 @@ import be.alb_mar_hen.validators.StringValidator;
 public class Maintenance implements Serializable{
 	//Constants
 	private static final long serialVersionUID = 9182766473158370811L;
-	private final static int MIN_LENGTH_REPORT = 150;
+	private final static int MIN_LENGTH_REPORT = 10;
 	
 	// Validators
 	private NumericValidator numericValidator;
@@ -38,6 +37,8 @@ public class Maintenance implements Serializable{
 	
 	// Relations
 	private Set<MaintenanceWorker> maintenanceWorkers;
+	
+	@JsonBackReference
 	private Machine machine;
 	private MaintenanceResponsable maintenanceResponsable;
 		
@@ -180,14 +181,14 @@ public class Maintenance implements Serializable{
 	}
 
 	public void setMachine(Machine machine) {
-		if(!objectValidator.hasValue(machine)) {
-			throw new NullPointerException("Machine must have a value.");
-		}
-		
-		if (this.machine != machine) {
-			this.machine = machine;
-			machine.addMaintenance(this);
-		}
+//		if(!objectValidator.hasValue(machine)) {
+//			throw new NullPointerException("Machine must have a value.");
+//		}
+//		
+//		if (this.machine != machine) {
+//			this.machine = machine;
+//			machine.addMaintenance(this);
+//		}
 		
 		this.machine = machine;
 	}
@@ -199,7 +200,6 @@ public class Maintenance implements Serializable{
 
 	    if (this.maintenanceResponsable != responsable) {
 	        this.maintenanceResponsable = responsable;
-	        responsable.addMaintenance(this);
 	    }
 	}
 	
@@ -210,9 +210,6 @@ public class Maintenance implements Serializable{
 	    }
 
 	    boolean added = maintenanceWorkers.add(worker);
-	    if (added) {
-	        worker.addMaintenance(this);
-	    }
 
 	    return added;
 	}

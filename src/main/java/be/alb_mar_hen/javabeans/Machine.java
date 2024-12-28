@@ -6,11 +6,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import be.alb_mar_hen.enumerations.MachineStatus;
 import be.alb_mar_hen.javabeans.Machine;
-import be.alb_mar_hen.javabeans.MachineType;
-import be.alb_mar_hen.javabeans.Maintenance;
-import be.alb_mar_hen.javabeans.Zone;
 import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;
@@ -28,7 +27,10 @@ public class Machine implements Serializable{
 	private String name;
 	
 	// Relations
+	
+	@JsonManagedReference
 	private Set<Maintenance> maintenances;
+	
 	private Set<Zone> zones;
 	private MachineType machineType;
 	
@@ -141,9 +143,6 @@ public class Machine implements Serializable{
 		}
 		
 		boolean added = zones.add(zone);
-		if (added) {
-			zone.addMachine(this);
-		}
 		
 		return added;
 	}
