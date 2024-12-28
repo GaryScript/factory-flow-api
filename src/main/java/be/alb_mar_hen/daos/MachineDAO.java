@@ -98,7 +98,7 @@ public class MachineDAO implements DAO<Machine>{
 	                LocalDateTime maintenanceEndDate = Conversion.extractLocalDateTime(maintenanceAttributes[2]);
 	                int maintenanceDuration = Conversion.extractInt(maintenanceAttributes[3]);
 	                String maintenanceReport = null;
-	                Object maintenanceReportObject = machineAttributes[4]; 
+	                Object maintenanceReportObject = maintenanceAttributes[4]; 
 	                if (maintenanceReportObject instanceof Clob) {
 	                    Clob clob = (Clob) maintenanceReportObject;
 	                    maintenanceReport = clob.getSubString(1, (int) clob.length());
