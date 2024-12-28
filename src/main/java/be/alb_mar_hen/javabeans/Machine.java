@@ -6,15 +6,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import be.alb_mar_hen.enumerations.MachineStatus;
 import be.alb_mar_hen.javabeans.Machine;
-import be.alb_mar_hen.javabeans.MachineType;
-import be.alb_mar_hen.javabeans.Maintenance;
-import be.alb_mar_hen.javabeans.Zone;
 import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;

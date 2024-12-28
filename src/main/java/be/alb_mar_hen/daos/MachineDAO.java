@@ -1,6 +1,5 @@
 package be.alb_mar_hen.daos;
 
-import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Clob;
 import java.sql.Connection;
@@ -9,7 +8,6 @@ import java.sql.Struct;
 import java.sql.Types;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -18,22 +16,16 @@ import be.alb_mar_hen.enumerations.MaintenanceStatus;
 import be.alb_mar_hen.enumerations.ZoneColor;
 import be.alb_mar_hen.formatters.StringFormatter;
 import be.alb_mar_hen.javabeans.Machine;
-import be.alb_mar_hen.javabeans.Site;
 import be.alb_mar_hen.javabeans.Zone;
 import be.alb_mar_hen.javabeans.Maintenance;
 import be.alb_mar_hen.javabeans.MaintenanceResponsable;
 import be.alb_mar_hen.javabeans.MaintenanceWorker;
 
-import java.util.Set;
 
 import be.alb_mar_hen.validators.DateValidator;
 import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;
-import java.sql.Date;
-import java.time.LocalDateTime;
-import java.time.LocalDate;
-import java.util.Optional;
 import be.alb_mar_hen.utils.Conversion;
 
 public class MachineDAO implements DAO<Machine>{
@@ -185,14 +177,11 @@ public class MachineDAO implements DAO<Machine>{
 	            );
 
 	            for (Maintenance maintenance : maintenances) {
-	            	Optional<String> report = Optional.of("ddddddddddddddddddddddddddddddddddddd");
-	            	maintenance.setReport(report);
 	                maintenance.setMachine(machine);
 	                machine.addMaintenance(maintenance);
 	            }
 
 	            machines.add(machine);
-	            System.out.println(machine.getMaintenances().toString());
 	        }
 
 	    } catch (SQLException e) {
