@@ -2,6 +2,7 @@ package be.alb_mar_hen.daos;
 
 import java.math.BigDecimal;
 import java.sql.CallableStatement;
+import java.sql.Clob;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Struct;
@@ -33,7 +34,7 @@ import java.sql.Date;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.util.Optional;
-
+import be.alb_mar_hen.utils.Conversion;
 
 public class MachineDAO implements DAO<Machine>{
 	private Connection connection = null;
@@ -55,7 +56,6 @@ public class MachineDAO implements DAO<Machine>{
 	        stmt.registerOutParameter(1, Types.ARRAY, "MACHINE_PACKAGE.MACHINE_DATA_TAB");
 	        stmt.execute();
 
-	        // Récupérer le tableau principal de machines
 	        java.sql.Array machineArray = stmt.getArray(1);
 	        Object[] machineResults = (Object[]) machineArray.getArray();
 
@@ -63,41 +63,35 @@ public class MachineDAO implements DAO<Machine>{
 	            Struct machineRow = (Struct) machineResult;
 	            Object[] machineAttributes = machineRow.getAttributes();
 
-	            // Récupérer les attributs de la machine
-	            Optional<BigDecimal> machineIdBigDecimal = Optional.ofNullable((BigDecimal) machineAttributes[0]);
-	            Optional<Integer> machineId = machineIdBigDecimal.map(BigDecimal::intValue);
-
+	            int machineId = Conversion.extractInt(machineAttributes[0]);
 	            String machineTypeName = (String) machineAttributes[1];
-	            double machineTypePrice = (Double) machineAttributes[2];
-	            int machineTypeDaysBeforeMaintenance = (Integer) machineAttributes[3];
+	            double machineTypePrice = Conversion.extractDouble(machineAttributes[2]);
+	            int machineTypeDaysBeforeMaintenance = Conversion.extractInt(machineAttributes[3]);
 	            String machineName = (String) machineAttributes[4];
-	            MachineStatus status = MachineStatus.valueOf((String) machineAttributes[5]);
+	            MachineStatus status = MachineStatus.fromString((String) machineAttributes[5]);
 
-	            // Zone et Site
-	            Optional<Integer> zoneId = Optional.ofNullable((Integer) machineAttributes[6]);
+	            int zoneId = Conversion.extractInt(machineAttributes[6]);
 	            String zoneName = (String) machineAttributes[7];
-	            ZoneColor zoneColor = ZoneColor.valueOf((String) machineAttributes[8]);
-	            Optional<Integer> siteId = Optional.ofNullable((Integer) machineAttributes[9]);
+	            ZoneColor zoneColor = ZoneColor.fromDatabaseValue((String) machineAttributes[8]);
+	            int siteId = Conversion.extractInt(machineAttributes[9]);
 	            String siteCity = (String) machineAttributes[10];
 
-	            // Construire l'objet Zone
 	            NumericValidator numericValidator = new NumericValidator();
 	            StringValidator stringValidator = new StringValidator();
 	            ObjectValidator objectValidator = new ObjectValidator();
 	            StringFormatter stringFormatter = new StringFormatter();
 
 	            Zone zone = new Zone(
-	                zoneId,
+	                Optional.of(zoneId),
 	                zoneColor,
 	                zoneName,
-	                siteId,
+	                Optional.of(siteId),
 	                siteCity,
 	                numericValidator,
 	                objectValidator,
 	                stringValidator
 	            );
 
-	            // Récupérer le tableau des maintenances
 	            java.sql.Array maintenanceArray = (java.sql.Array) machineAttributes[11];
 	            Object[] maintenanceResults = maintenanceArray != null ? (Object[]) maintenanceArray.getArray() : new Object[0];
 
@@ -107,29 +101,28 @@ public class MachineDAO implements DAO<Machine>{
 	                Struct maintenanceRow = (Struct) maintenanceResult;
 	                Object[] maintenanceAttributes = maintenanceRow.getAttributes();
 
-	                // Récupérer les attributs de la maintenance
-	                Optional<BigDecimal> maintenanceIdBigDecimal = Optional.ofNullable((BigDecimal) maintenanceAttributes[0]);
-	                Optional<Integer> maintenanceId = maintenanceIdBigDecimal.map(BigDecimal::intValue);
+	                int maintenanceId = Conversion.extractInt(maintenanceAttributes[0]);
+	                System.out.println("maintenanceAttributes[1]: " + maintenanceAttributes[1]);
+	                LocalDateTime maintenanceStartDate = Conversion.extractLocalDateTime(maintenanceAttributes[1]);
+	                LocalDateTime maintenanceEndDate = Conversion.extractLocalDateTime(maintenanceAttributes[2]);
+	                int maintenanceDuration = Conversion.extractInt(maintenanceAttributes[3]);
+	                String maintenanceReport = null;
+	                Object maintenanceReportObject = machineAttributes[4]; 
+	                if (maintenanceReportObject instanceof Clob) {
+	                    Clob clob = (Clob) maintenanceReportObject;
+	                    maintenanceReport = clob.getSubString(1, (int) clob.length());
+	                }
+	                String statusValue = (String) maintenanceAttributes[5];
+	                MaintenanceStatus maintenanceStatus = MaintenanceStatus.fromString(statusValue);
 
-
-	                LocalDateTime maintenanceStartDate = Optional.ofNullable((Date) maintenanceAttributes[1])
-	                    .map(date -> date.toLocalDate().atStartOfDay())
-	                    .orElse(null);
-	                Optional<LocalDateTime> maintenanceEndDate = Optional.ofNullable((Date) maintenanceAttributes[2])
-	                    .map(date -> date.toLocalDate().atStartOfDay());
-	                Optional<Integer> maintenanceDuration = Optional.ofNullable((Integer) maintenanceAttributes[3]);
-	                Optional<String> maintenanceReport = Optional.ofNullable((String) maintenanceAttributes[4]);
-	                MaintenanceStatus maintenanceStatus = MaintenanceStatus.valueOf((String) maintenanceAttributes[5]);
-
-	                // Maintenance Responsable
-	                Optional<Integer> maintenanceResponsableId = Optional.ofNullable((Integer) maintenanceAttributes[6]);
+	                int maintenanceResponsableId = Conversion.extractInt(maintenanceAttributes[6]);
 	                String maintenanceResponsableMatricule = (String) maintenanceAttributes[7];
 	                String maintenanceResponsablePassword = (String) maintenanceAttributes[8];
 	                String maintenanceResponsableFirstName = (String) maintenanceAttributes[9];
 	                String maintenanceResponsableLastName = (String) maintenanceAttributes[10];
 
 	                MaintenanceResponsable maintenanceResponsable = new MaintenanceResponsable(
-	                    maintenanceResponsableId,
+	                    Optional.of(maintenanceResponsableId),
 	                    maintenanceResponsableMatricule,
 	                    maintenanceResponsablePassword,
 	                    maintenanceResponsableFirstName,
@@ -140,15 +133,14 @@ public class MachineDAO implements DAO<Machine>{
 	                    stringFormatter
 	                );
 
-	                // Maintenance Worker
-	                Optional<Integer> maintenanceWorkerId = Optional.ofNullable((Integer) maintenanceAttributes[11]);
+	                int maintenanceWorkerId = Conversion.extractInt(maintenanceAttributes[11]);
 	                String maintenanceWorkerMatricule = (String) maintenanceAttributes[12];
 	                String maintenanceWorkerPassword = (String) maintenanceAttributes[13];
 	                String maintenanceWorkerFirstName = (String) maintenanceAttributes[14];
 	                String maintenanceWorkerLastName = (String) maintenanceAttributes[15];
 
 	                MaintenanceWorker maintenanceWorker = new MaintenanceWorker(
-	                    maintenanceWorkerId,
+	                    Optional.of(maintenanceWorkerId),
 	                    maintenanceWorkerMatricule,
 	                    maintenanceWorkerPassword,
 	                    maintenanceWorkerFirstName,
@@ -158,15 +150,24 @@ public class MachineDAO implements DAO<Machine>{
 	                    stringFormatter,
 	                    objectValidator
 	                );
-
+	                
+	                System.out.println(maintenanceId);
+	                System.out.println(maintenanceStartDate);
+	                System.out.println(maintenanceEndDate);
+	                System.out.println(maintenanceDuration);
+	                System.out.println(maintenanceReport);
+	                System.out.println(maintenanceStatus);
+	                System.out.println(maintenanceWorker);
+	                System.out.println(maintenanceResponsable);
+	                
 	                Maintenance maintenance = new Maintenance(
-	                	maintenanceId,
+	                    Optional.of(maintenanceId),
 	                    maintenanceStartDate,
-	                    maintenanceEndDate,
-	                    maintenanceDuration,
-	                    maintenanceReport,
+	                    Optional.ofNullable(maintenanceEndDate),
+	                    Optional.of(maintenanceDuration),
+	                    Optional.ofNullable(maintenanceReport),
 	                    maintenanceStatus,
-	                    null, // La machine sera associée après
+	                    null, 
 	                    maintenanceWorker,
 	                    maintenanceResponsable,
 	                    numericValidator,
@@ -178,14 +179,13 @@ public class MachineDAO implements DAO<Machine>{
 	                maintenances.add(maintenance);
 	            }
 
-	            // Construire la machine
 	            Machine machine = new Machine(
-	                machineId,
+	                Optional.of(machineId),
 	                machineTypeName,
 	                status,
 	                machineName,
 	                zone,
-	                Optional.ofNullable((Integer) machineAttributes[0]),
+	                Optional.of(machineId),
 	                machineTypeName,
 	                machineTypePrice,
 	                machineTypeDaysBeforeMaintenance,
@@ -194,16 +194,16 @@ public class MachineDAO implements DAO<Machine>{
 	                stringValidator
 	            );
 
-	            // Associer les maintenances à la machine
 	            for (Maintenance maintenance : maintenances) {
 	                maintenance.setMachine(machine);
+	                machine.addMaintenance(maintenance);
 	            }
 
 	            machines.add(machine);
 	        }
 
 	    } catch (SQLException e) {
-	    	e.printStackTrace();
+	        e.printStackTrace();
 	        throw new SQLException("Error while fetching machines: " + e.getMessage(), e);
 	    } finally {
 	        if (stmt != null) stmt.close();

@@ -180,14 +180,14 @@ public class Maintenance implements Serializable{
 	}
 
 	public void setMachine(Machine machine) {
-		if(!objectValidator.hasValue(machine)) {
-			throw new NullPointerException("Machine must have a value.");
-		}
-		
-		if (this.machine != machine) {
-			this.machine = machine;
-			machine.addMaintenance(this);
-		}
+//		if(!objectValidator.hasValue(machine)) {
+//			throw new NullPointerException("Machine must have a value.");
+//		}
+//		
+//		if (this.machine != machine) {
+//			this.machine = machine;
+//			machine.addMaintenance(this);
+//		}
 		
 		this.machine = machine;
 	}
