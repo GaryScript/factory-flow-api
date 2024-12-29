@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonInclude;
 
 import be.alb_mar_hen.enumerations.MaintenanceStatus;
 import be.alb_mar_hen.javabeans.Maintenance;
@@ -28,6 +29,7 @@ public class Maintenance implements Serializable{
 	private DateValidator dateValidator;
 	
 	// Attributes
+	@JsonInclude(JsonInclude.Include.NON_ABSENT)
 	private Optional<Integer> id;
 	private LocalDateTime startDateTime;
 	private Optional<LocalDateTime> endDateTime;

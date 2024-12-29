@@ -163,7 +163,6 @@ public class MachineDAO implements DAO<Machine>{
 
 	            Machine machine = new Machine(
 	                Optional.of(machineId),
-	                machineTypeName,
 	                status,
 	                machineName,
 	                zone,

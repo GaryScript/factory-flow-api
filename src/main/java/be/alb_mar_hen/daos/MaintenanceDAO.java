@@ -9,20 +9,27 @@ import java.sql.SQLException;
 import java.sql.Struct;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import be.alb_mar_hen.enumerations.MachineStatus;
+import be.alb_mar_hen.enumerations.MaintenanceStatus;
 import be.alb_mar_hen.enumerations.ZoneColor;
+import be.alb_mar_hen.formatters.StringFormatter;
 import be.alb_mar_hen.javabeans.Machine;
 import be.alb_mar_hen.javabeans.MachineType;
 import be.alb_mar_hen.javabeans.Maintenance;
+import be.alb_mar_hen.javabeans.MaintenanceResponsable;
+import be.alb_mar_hen.javabeans.MaintenanceWorker;
 import be.alb_mar_hen.javabeans.Zone;
+import be.alb_mar_hen.validators.DateValidator;
 import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;
@@ -43,31 +50,18 @@ public class MaintenanceDAO implements DAO<Maintenance>{
 		 List<Maintenance> maintenancesList = new ArrayList<>();
 
 		    try {
-		        // Appel de la fonction PL/SQL qui retourne une collection
 		        CallableStatement stmt = connection.prepareCall("{ ? = call Pkg_maintenances.get_maintenances() }");
 
-		        // Enregistrer le type de retour comme TABLE et spécifier le nom complet du type
 		        stmt.registerOutParameter(1, OracleTypes.ARRAY, "PKG_MAINTENANCES.MAINTENANCES_COLLECTION");
 
-		        // Exécuter la fonction
 		        stmt.execute();
-
 		        
 		        ResultSet rsMaintenances = stmt.getArray(1).getResultSet();
 		        
 		        while(rsMaintenances.next()) {
 		        	Struct maintenanceData = (Struct) rsMaintenances.getObject(2);
 		        	Object[] attributes = maintenanceData.getAttributes();
-		        	
-		        	
-		        	//Maintenance
-		        	int maintenanceId = ((BigDecimal) attributes[0]).intValue();
-	                LocalDate maintenanceStartDate = ((Timestamp) attributes[1]).toLocalDateTime().toLocalDate();
-	                LocalDate maintenanceEndDate = ((Timestamp) attributes[2]).toLocalDateTime().toLocalDate();
-	                int duration = ((BigDecimal) attributes[3]).intValue();
-	                String report = (String) attributes[4];
-	                int status = ((BigDecimal) attributes[5]).intValue();
-	                
+		            
 	                //Site
 	                ResultSet rsSite = ((Array)attributes[8]).getResultSet();
 	                
@@ -80,9 +74,6 @@ public class MaintenanceDAO implements DAO<Maintenance>{
 
 						site_id = ((BigDecimal) siteAttributes[0]).intValue();
 						city = (String) siteAttributes[1];
-
-						System.out.println("Site ID: " + site_id);
-						System.out.println("City: " + city);
 					}
 					
 					//Zones
@@ -96,10 +87,6 @@ public class MaintenanceDAO implements DAO<Maintenance>{
 						int zoneId = ((BigDecimal) zoneAttributes[0]).intValue();
 						String zoneName = (String) zoneAttributes[1];
 						int zoneColor = ((BigDecimal) zoneAttributes[2]).intValue();
-
-						System.out.println("Zone ID: " + zoneId);
-						System.out.println("Zone Name: " + zoneName);
-						System.out.println("Zone Color: " + zoneColor);
 						
 						Zone currZone = new Zone(Optional.of(zoneId), ZoneColor.fromDatabaseValue(zoneColor), zoneName,Optional.of(site_id), city, new NumericValidator(), new ObjectValidator(), new StringValidator());
 					
@@ -119,11 +106,6 @@ public class MaintenanceDAO implements DAO<Maintenance>{
                         double machineTypePrice = ((BigDecimal) machineTypeAttributes[2]).doubleValue();
                         int machineTypeDaysBeforeMaintenance = ((BigDecimal) machineTypeAttributes[3]).intValue();
                         
-                        System.out.println("Machine Type ID: " + machineTypeId);
-                        System.out.println("Machine Type Name: " + machineTypeName);
-                        System.out.println("Machine Type Price: " + machineTypePrice);
-                        System.out.println("Machine Type Days Before Maintenance: " + machineTypeDaysBeforeMaintenance);
-                        
                         machineTypeObj = new MachineType(Optional.of(machineTypeId), machineTypeName, machineTypePrice, machineTypeDaysBeforeMaintenance, new NumericValidator(), new StringValidator(), new ObjectValidator());
 					}
 					
@@ -131,7 +113,6 @@ public class MaintenanceDAO implements DAO<Maintenance>{
 	                //Machine
 		        	ResultSet rsMachines = ((Array)attributes[6]).getResultSet();
 		        	Machine machineObj = null;
-		        	System.out.println("Maintenance id : " + maintenanceId);
 		        	
 		        	int machineId; 
                     int machineStatus;
@@ -141,29 +122,69 @@ public class MaintenanceDAO implements DAO<Maintenance>{
 		        		Struct machineData = (Struct) rsMachines.getObject(2);
 	                    Object[] machineAttributes = machineData.getAttributes();
 	                    
-		        		System.out.println("Machines: ");
 		        		machineId = ((BigDecimal) machineAttributes[0]).intValue();
 	                    machineStatus = ((BigDecimal) machineAttributes[1]).intValue();
-	                    machineName = (String) machineAttributes[2];
-
-	                    System.out.println("Machine ID: " + machineId);
-	                    System.out.println("Machine Name: " + machineName);
-	                    System.out.println("Machine Type: " + machineStatus);
+	                    machineName = (String) machineAttributes[2];;
 	                    
-	                    Iterator<Zone> zonesIterator = zones.iterator();
-	                    
-	                    Zone zone = null;
-	                    if(zonesIterator.hasNext()) {
-	                    	zone = zonesIterator.next();
-	                    }
-	                    
-	                    machineObj = new Machine(Optional.of(machineId), machineTypeObj.getType(), MachineStatus.fromDatabaseValue(machineStatus), machineName, zone, machineTypeObj.getId(), machineTypeObj.getType(), machineTypeObj.getPrice(), machineTypeObj.getDaysBeforeMaintenance(),new NumericValidator(), new ObjectValidator(), new StringValidator());
+	                    machineObj = new Machine(Optional.of(machineId), MachineStatus.fromDatabaseValue(machineStatus), machineName, zones.stream().findFirst().get(), machineTypeObj.getId(), machineTypeObj.getType(), machineTypeObj.getPrice(), machineTypeObj.getDaysBeforeMaintenance(),new NumericValidator(), new ObjectValidator(), new StringValidator());          
 		        	}
+		        	
+		        	//Responsable
+                    ResultSet rsResponsable = ((Array)attributes[11]).getResultSet();
+                    MaintenanceResponsable responsable = null;
+                    
+                    while(rsResponsable.next()) {
+                    	Struct responsableData = (Struct) rsResponsable.getObject(2);
+                    	Object[] responsableAttributes = responsableData.getAttributes();
+                    	
+                    	int responsableId = ((BigDecimal) responsableAttributes[0]).intValue();
+                    	String responsableMatricule = (String) responsableAttributes[1];
+                    	String responsablePassword = (String) responsableAttributes[2];
+                    	String responsableFirstName = (String) responsableAttributes[3];
+                    	String responsableLastName = (String) responsableAttributes[4];
+                    	
+                    	responsable = new MaintenanceResponsable(Optional.of(responsableId), responsableMatricule, responsablePassword, responsableFirstName, responsableLastName, new ObjectValidator(), new StringValidator(), new NumericValidator(), new StringFormatter());
+                    }
+                    
+                    //Workers
+                    Set<MaintenanceWorker> workers = new HashSet<MaintenanceWorker>();
+                    ResultSet rsWorkers = ((Array)attributes[10]).getResultSet();
+                    
+					while (rsWorkers.next()) {
+						Struct workerData = (Struct) rsWorkers.getObject(2);
+						Object[] workerAttributes = workerData.getAttributes();
+
+						int workerId = ((BigDecimal) workerAttributes[0]).intValue();
+						String workerMatricule = (String) workerAttributes[1];
+						String workerPassword = (String) workerAttributes[2];
+						String workerFirstName = (String) workerAttributes[3];
+						String workerLastName = (String) workerAttributes[4];
+
+						MaintenanceWorker worker = new MaintenanceWorker(Optional.of(workerId), workerMatricule,
+								workerPassword, workerFirstName, workerLastName, new StringValidator(),
+								new NumericValidator(), new StringFormatter(), new ObjectValidator());
+						
+						workers.add(worker);
+					}
+					
+					//Maintenance
+		        	int maintenanceId = ((BigDecimal) attributes[0]).intValue();
+	                LocalDateTime maintenanceStartDate = ((Timestamp) attributes[1]).toLocalDateTime();
+	                LocalDateTime maintenanceEndDate = ((Timestamp) attributes[2]).toLocalDateTime();
+	                int duration = ((BigDecimal) attributes[3]).intValue();
+	                String report = (String) attributes[4];
+	                int status = ((BigDecimal) attributes[5]).intValue();
+	                
+	                Maintenance maintenance = new Maintenance(Optional.of(maintenanceId), maintenanceStartDate, 
+	                		Optional.of(maintenanceEndDate), Optional.of(duration), Optional.of(report), 
+	                		MaintenanceStatus.fromDatabaseValue(status), 
+	                		machineObj, workers.stream().findFirst().get(), responsable, new NumericValidator(), new StringValidator(), new ObjectValidator(), new DateValidator());
+		        	
+		        	maintenancesList.add(maintenance);
 		        }
-		        
 		        stmt.close();
 		    } catch (SQLException e) {
-		        e.printStackTrace();  // Gérer les erreurs SQL
+		        e.printStackTrace();
 		    }
 
 	    return maintenancesList;

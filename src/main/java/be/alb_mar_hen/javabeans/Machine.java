@@ -38,8 +38,7 @@ public class Machine implements Serializable{
 	public Machine() {}
 	
 	public Machine(
-		Optional<Integer> id, 
-		String type,
+		Optional<Integer> id,
 		MachineStatus status, 
 		String name, 
 		Zone zone,
