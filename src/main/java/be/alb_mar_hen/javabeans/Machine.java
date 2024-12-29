@@ -35,6 +35,8 @@ public class Machine implements Serializable{
 	private MachineType machineType;
 	
 	// Constructors
+	public Machine() {}
+	
 	public Machine(
 		Optional<Integer> id, 
 		String type,

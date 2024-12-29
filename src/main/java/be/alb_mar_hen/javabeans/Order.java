@@ -31,6 +31,8 @@ public class Order implements Serializable{
 	private Machine machine;
 	
 	// Constructors
+	public Order() {}
+	
 	public Order(
 		Optional<Integer> id, 
 		LocalDateTime orderDate, 

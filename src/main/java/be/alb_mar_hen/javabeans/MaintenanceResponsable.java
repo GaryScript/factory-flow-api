@@ -22,6 +22,8 @@ public class MaintenanceResponsable extends Employee implements Serializable{
 	
 	
 	// Constructors
+	public MaintenanceResponsable() {}
+	
 	public MaintenanceResponsable(
 		Optional<Integer> id, 
 		String matricule, 

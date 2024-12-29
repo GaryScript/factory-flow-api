@@ -50,13 +50,11 @@
 		<artifactId>json</artifactId>
 		<version>20210307</version>
 	</dependency>
-<<<<<<< HEAD
 	<!-- https://mvnrepository.com/artifact/org.webjars/bootstrap -->
 	<dependency>
 	    <groupId>org.webjars</groupId>
 	    <artifactId>bootstrap</artifactId>
-	    <version>5.3.3</version>
-=======
+	    <version>5.3.3</version>	</dependency>
 	<dependency>
         <groupId>com.oracle.database.jdbc</groupId>
         <artifactId>ojdbc11</artifactId>
@@ -76,7 +74,6 @@
 	    <groupId>com.fasterxml.jackson.datatype</groupId>
 	    <artifactId>jackson-datatype-jsr310</artifactId>
 	    <version>2.15.2</version>
->>>>>>> 6074af735b6b13ceb87ac1acedff8dbf5a443565
 	</dependency>
   </dependencies>
 </project>

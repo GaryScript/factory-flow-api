@@ -25,6 +25,8 @@ public class Supplier implements Serializable{
 	private MachineType machineType;
 	
 	// Constructors
+	public Supplier() {}
+	
 	public Supplier(
 		Optional<Integer> id, 
 		String name,

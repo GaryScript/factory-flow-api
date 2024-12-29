@@ -43,6 +43,8 @@ public class Maintenance implements Serializable{
 	private MaintenanceResponsable maintenanceResponsable;
 		
 	// Constructors
+	public Maintenance() {}
+	
 	public Maintenance(
 		Optional<Integer> id, 
 		LocalDateTime startDateTime, 

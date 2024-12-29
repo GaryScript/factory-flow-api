@@ -13,6 +13,8 @@ public class PurchasingAgent extends Employee implements Serializable{
 	private static final long serialVersionUID = -371441893465098035L;
 
 	// Constructors
+	public PurchasingAgent() {}
+	
 	public PurchasingAgent(
 		Optional<Integer> id, 
 		String matricule, 
