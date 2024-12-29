@@ -23,6 +23,9 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import be.alb_mar_hen.daos.EmployeeDAO;
 import be.alb_mar_hen.daos.FactoryFlowConnection;
 import be.alb_mar_hen.javabeans.Employee;
+import be.alb_mar_hen.javabeans.MaintenanceResponsable;
+import be.alb_mar_hen.javabeans.MaintenanceWorker;
+import be.alb_mar_hen.javabeans.PurchasingAgent;
 
 
 @Path("/login")
@@ -53,8 +56,20 @@ public class AuthenticationAPI{
 	        objectMapper.registerModule(new Jdk8Module()); 
 
 	        String employeeJson = objectMapper.writeValueAsString(employee);
+	        JSONObject employeeJsonObject = new JSONObject(employeeJson);
+	        
+	        String role = "";
+	        if (employee instanceof MaintenanceResponsable) {
+	            role = "Maintenance Responsable";
+	        } else if (employee instanceof MaintenanceWorker) {
+	            role = "Maintenance Worker";
+	        } else if (employee instanceof PurchasingAgent) {
+	            role = "Purchasing Agent";
+	        }
 
-	        return Response.ok(employeeJson).build();
+	        employeeJsonObject.put("role", role);
+
+	        return Response.ok(employeeJsonObject.toString()).build();
 
 	    } catch (SQLException e) {
 	        if (e.getErrorCode() == 20001) {
