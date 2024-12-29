@@ -47,7 +47,7 @@ public class EmployeeDAO implements DAO<Employee>{
             	    (String) attributes[4], // role
             	    Optional.ofNullable(((Number) attributes[0]).intValue()), // employeeId
             	    (String) attributes[1], // matricule
-            	    null, // password (non inclus dans attributes)
+            	    password, // password (non inclus dans attributes)
             	    (String) attributes[2], // firstName
             	    (String) attributes[3], // lastName
             	    stringValidator,
