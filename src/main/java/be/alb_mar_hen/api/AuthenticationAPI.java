@@ -16,7 +16,16 @@ import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
 import org.json.JSONObject;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+
+import be.alb_mar_hen.daos.EmployeeDAO;
 import be.alb_mar_hen.daos.FactoryFlowConnection;
+import be.alb_mar_hen.javabeans.Employee;
+import be.alb_mar_hen.javabeans.MaintenanceResponsable;
+import be.alb_mar_hen.javabeans.MaintenanceWorker;
+import be.alb_mar_hen.javabeans.PurchasingAgent;
 
 
 @Path("/login")
@@ -37,64 +46,51 @@ public class AuthenticationAPI{
 	                .build();
 	    }
 
-	    Connection connection = null;
-	    CallableStatement stmt = null;
-
 	    try {
-	        connection = FactoryFlowConnection.getInstance();
+	        Connection connection = FactoryFlowConnection.getInstance();
+	        EmployeeDAO employeeDAO = new EmployeeDAO(connection);
 
-	        String call = "{CALL sp_check_user_authentication(?, ?, ?, ?, ?, ?)}";
-	        stmt = connection.prepareCall(call);
-	        stmt.setString(1, matricule);
-	        stmt.setString(2, password);
-	        stmt.registerOutParameter(3, java.sql.Types.VARCHAR); // firstName
-	        stmt.registerOutParameter(4, java.sql.Types.VARCHAR); // lastName
-	        stmt.registerOutParameter(5, java.sql.Types.VARCHAR); // role
-	        stmt.registerOutParameter(6, java.sql.Types.INTEGER); // employee_id
+	        Employee employee = employeeDAO.authenticate(matricule, password);
 
-	        stmt.execute();
+	        ObjectMapper objectMapper = new ObjectMapper();
+	        objectMapper.registerModule(new Jdk8Module()); 
 
-	        String firstName = stmt.getString(3);
-	        String lastName = stmt.getString(4);
-	        String role = stmt.getString(5);
-	        int employeeId = stmt.getInt(6);
+	        String employeeJson = objectMapper.writeValueAsString(employee);
+	        JSONObject employeeJsonObject = new JSONObject(employeeJson);
+	        
+	        String role = "";
+	        if (employee instanceof MaintenanceResponsable) {
+	            role = "Maintenance Responsable";
+	        } else if (employee instanceof MaintenanceWorker) {
+	            role = "Maintenance Worker";
+	        } else if (employee instanceof PurchasingAgent) {
+	            role = "Purchasing Agent";
+	        }
 
-	        JSONObject responseJson = new JSONObject();
-	        responseJson.put("employeeId", employeeId); 
-	        responseJson.put("matricule", matricule);
-	        responseJson.put("firstName", firstName);
-	        responseJson.put("lastName", lastName);
-	        responseJson.put("role", role);
+	        employeeJsonObject.put("role", role);
 
-	        return Response.status(Status.OK).entity(responseJson.toString()).build();
+	        return Response.ok(employeeJsonObject.toString()).build();
 
 	    } catch (SQLException e) {
-	        String errorMessage;
-
-	        switch (e.getErrorCode()) {
-	            case 20001:
-	                errorMessage = "Invalid matricule or password.";
-	                break;
-	            case 20002:
-	                errorMessage = "Role not found for the employee.";
-	                break;
-	            default:
-	                errorMessage = "An unexpected error occurred: " + e.getMessage();
+	        if (e.getErrorCode() == 20001) {
+	            return Response.status(Status.UNAUTHORIZED)
+	                    .entity("{\"error\": \"Invalid matricule or password.\"}")
+	                    .build();
+	        } else {
+	            return Response.status(Status.INTERNAL_SERVER_ERROR)
+	                    .entity("{\"error\": \"An error occurred while authenticating the user: " + e.getMessage() + "\"}")
+	                    .build();
 	        }
-
-	        return Response.status(Status.UNAUTHORIZED)
-	                .entity("{\"error\": \"" + errorMessage + "\"}")
+	    } catch (JsonProcessingException e) {
+	        return Response.status(Status.INTERNAL_SERVER_ERROR)
+	                .entity("{\"error\": \"An error occurred while processing the response.\"}")
 	                .build();
-
-	    } finally {
-	        try {
-	            if (stmt != null) stmt.close();
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
+	    } catch (Exception e) {
+	        return Response.status(Status.INTERNAL_SERVER_ERROR)
+	                .entity("{\"error\": \"An unexpected error occurred: " + e.getMessage() + "\"}")
+	                .build();
 	    }
 	}
-
 
 	// to check if the api is responding
 	@GET
