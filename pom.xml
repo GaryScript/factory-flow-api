@@ -45,11 +45,6 @@
 		<artifactId>Factory-flow</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</dependency>
-	<dependency>
-      <groupId>org.glassfish.jersey.media</groupId>
-      <artifactId>jersey-media-json-jackson</artifactId>
-      <version>2.28</version>
-    </dependency>
     <dependency>
 		<groupId>org.json</groupId>
 		<artifactId>json</artifactId>
@@ -60,6 +55,25 @@
 	    <groupId>org.webjars</groupId>
 	    <artifactId>bootstrap</artifactId>
 	    <version>5.3.3</version>
+	<dependency>
+        <groupId>com.oracle.database.jdbc</groupId>
+        <artifactId>ojdbc11</artifactId>
+        <version>23.6.0.24.10</version>
+    </dependency>
+    <dependency>
+	    <groupId>com.fasterxml.jackson.module</groupId>
+	    <artifactId>jackson-module-parameter-names</artifactId>
+	    <version>2.15.2</version>
+	</dependency>
+	<dependency>
+	    <groupId>com.fasterxml.jackson.datatype</groupId>
+	    <artifactId>jackson-datatype-jdk8</artifactId>
+	    <version>2.15.2</version>
+	</dependency>
+	<dependency>
+	    <groupId>com.fasterxml.jackson.datatype</groupId>
+	    <artifactId>jackson-datatype-jsr310</artifactId>
+	    <version>2.15.2</version>
 	</dependency>
   </dependencies>
 </project>

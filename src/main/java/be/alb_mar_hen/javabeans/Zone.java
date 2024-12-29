@@ -17,145 +17,122 @@ import be.alb_mar_hen.validators.StringValidator;
 public class Zone implements Serializable{
 	private static final long serialVersionUID = -2270925246678850136L;
 	// Validators
-	private NumericValidator numericValidator;
-	private ObjectValidator objectValidator;
-	private StringValidator stringValidator;
-	
-	// Attributes
-	private Optional<Integer> id;
-	private ZoneColor color;
-	private String name;
-	
-	// Relations
-	private Set<Machine> machines;
-	private Site site;
-	
-	// Constructors
-	public Zone(
-		Optional<Integer> id, 
-		ZoneColor color, 
-		String name,
-		Machine machine,
-		Optional<Integer> siteId,
-		String siteName,
-		NumericValidator numericValidator, 
-		ObjectValidator objectValidator,
-		StringValidator stringValidator
-	) {
-		this.numericValidator = numericValidator;
-		this.stringValidator = stringValidator;
-		this.objectValidator = objectValidator;
-		machines = new HashSet<>();
-		addMachine(machine);
-		setId(id);
-		setColor(color);
-		setName(name);
-		this.site = new Site(siteId, siteName, stringValidator, numericValidator, objectValidator);
-	}
-
-	// Getters
-	public Optional<Integer> getId() {
-		return id;
-	}
-	
-	public ZoneColor getColor() {
-		return color;
-	}
-	
-	public String getName() {
-		return name;
-	}
-	
-	public Set<Machine> getMachines() {
-		return machines;
-	}
-	
-	public Site getSite() {
-        return site;
-	}
-	
-	// Setters
-	public void setId(Optional<Integer> id) {
-		if (!objectValidator.hasValue(id)) {
-			throw new NullPointerException("Id must have a value.");
-		}
+		private NumericValidator numericValidator;
+		private ObjectValidator objectValidator;
+		private StringValidator stringValidator;
 		
-	    if (!numericValidator.isPositiveOrEqualToZero(id)) {
-	        throw new IllegalArgumentException("Id must be greater than or equal to 0");
-	    }
-	    
-	    this.id = id;
-	}
-
-	public void setColor(ZoneColor color) {
-		if(!objectValidator.hasValue(color)) {
-			throw new NullPointerException("Color must have a value.");
-		}
+		// Attributes
+		private Optional<Integer> id;
+		private ZoneColor color;
+		private String name;
 		
-		this.color = color;
-	}
-
-	public void setName(String name) {
-		if(!stringValidator.hasValue(name)) {
-			throw new NullPointerException("Name must have a value.");
-		}
+		// Relations
+		private Site site;
 		
-		this.name = name;
-	}
-	
-	// Methods
-	public boolean addMachine(Machine machine) {
-		if(!objectValidator.hasValue(machine)) {
-			throw new NullPointerException("Machine must have a value.");
-		}
-		
-		boolean added = machines.add(machine);
-		if (added) {
-			machine.addZone(this);
-		}
-		
-		return added;
-	}
-
-	// Override methods
-	@Override
-	public String toString() {
-		return "Zone [id=" + id.orElse(null) + 
-			", color=" + color + 
-			", name=" + name + 
-			", machines=" + machines + 
-			", site=" + site + "]";
-	}
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(
-			color, 
-			id.orElse(null),
-			machines,
-			name,
-			site
-		);
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj) {
-			return true;
-		}
-		
-		if (
-			!objectValidator.hasValue(obj) || 
-			getClass() != obj.getClass()
+		// Constructors
+		public Zone(
+			Optional<Integer> id, 
+			ZoneColor color, 
+			String name,
+			Optional<Integer> siteId,
+			String siteName,
+			NumericValidator numericValidator, 
+			ObjectValidator objectValidator,
+			StringValidator stringValidator
 		) {
-			return false;
+			this.numericValidator = numericValidator;
+			this.stringValidator = stringValidator;
+			this.objectValidator = objectValidator;
+			setId(id);
+			setColor(color);
+			setName(name);
+			this.site = new Site(siteId, siteName, stringValidator, numericValidator, objectValidator);
+		}
+
+		// Getters
+		public Optional<Integer> getId() {
+			return id;
 		}
 		
-		Zone other = (Zone) obj;
-		return color == other.color 
-			&& Objects.equals(id.orElse(null), other.id.orElse(null))
-			&& Objects.equals(machines, other.machines)
-			&& Objects.equals(name, other.name) 
-			&& Objects.equals(site, other.site);
-	}
+		public ZoneColor getColor() {
+			return color;
+		}
+		
+		public String getName() {
+			return name;
+		}
+		
+		public Site getSite() {
+	        return site;
+		}
+		
+		// Setters
+		public void setId(Optional<Integer> id) {
+			if (!objectValidator.hasValue(id)) {
+				throw new NullPointerException("Id must have a value.");
+			}
+			
+		    if (!numericValidator.isPositiveOrEqualToZero(id)) {
+		        throw new IllegalArgumentException("Id must be greater than or equal to 0");
+		    }
+		    
+		    this.id = id;
+		}
+
+		public void setColor(ZoneColor color) {
+			if(!objectValidator.hasValue(color)) {
+				throw new NullPointerException("Color must have a value.");
+			}
+			
+			this.color = color;
+		}
+
+		public void setName(String name) {
+			if(!stringValidator.hasValue(name)) {
+				throw new NullPointerException("Name must have a value.");
+			}
+			
+			this.name = name;
+		}
+		
+
+
+		// Override methods
+		@Override
+		public String toString() {
+			return "Zone [id=" + id.orElse(null) + 
+				", color=" + color + 
+				", name=" + name + 
+				", site=" + site + "]";
+		}
+
+		@Override
+		public int hashCode() {
+			return Objects.hash(
+				color, 
+				id.orElse(null),
+				name,
+				site
+			);
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) {
+				return true;
+			}
+			
+			if (
+				!objectValidator.hasValue(obj) || 
+				getClass() != obj.getClass()
+			) {
+				return false;
+			}
+			
+			Zone other = (Zone) obj;
+			return color == other.color 
+				&& Objects.equals(id.orElse(null), other.id.orElse(null))
+				&& Objects.equals(name, other.name) 
+				&& Objects.equals(site, other.site);
+		}
 }

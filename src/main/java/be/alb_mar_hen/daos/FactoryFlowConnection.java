@@ -31,6 +31,7 @@ public class FactoryFlowConnection {
             instance = DriverManager.getConnection(url, username, password);
 
         } catch (ClassNotFoundException | SQLException | IOException ex) {
+        	ex.printStackTrace();
             System.out.println("Database connection error: " + ex.getMessage());
             System.exit(0);  
         }
@@ -57,5 +58,5 @@ public class FactoryFlowConnection {
         } catch (SQLException ex) {
             System.out.println("Error closing the connection: " + ex.getMessage());
         }
-    }
+    }   
 }

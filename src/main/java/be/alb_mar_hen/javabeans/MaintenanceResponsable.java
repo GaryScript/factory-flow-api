@@ -20,8 +20,6 @@ public class MaintenanceResponsable extends Employee implements Serializable{
 	// Validators
 	private ObjectValidator objectValidator;
 	
-	// Relations
-	private Set<Maintenance> maintenances;
 	
 	// Constructors
 	public MaintenanceResponsable(
@@ -37,32 +35,14 @@ public class MaintenanceResponsable extends Employee implements Serializable{
 	) {
 		super(id, matricule, password, firstName, lastName, stringValidator, numericValidator, objectValidator, stringFormatter);
 		this.objectValidator = objectValidator;
-		maintenances = new HashSet<>();
 	}
 	
 	// Getters
-	public Set<Maintenance> getMaintenances() {
-		return maintenances;
-	}
-	
-	// Methods
-	public boolean addMaintenance(Maintenance maintenance) {
-	    if (!objectValidator.hasValue(maintenance)) {
-	        throw new IllegalArgumentException("Maintenance must have a value.");
-	    }
 
-	    boolean added = maintenances.add(maintenance);
-	    if (added) {
-	        maintenance.setMaintenanceResponsable(this);
-	    }
-
-	    return added;
-	}
-	
 	// Override methods
 	@Override
 	public String toString() {
-		return super.toString() + "MaintenanceResponsable [maintenances=" + maintenances + "]";
+		return super.toString() + "MaintenanceResponsable";
 	}
 	
 	@Override
@@ -71,13 +51,12 @@ public class MaintenanceResponsable extends Employee implements Serializable{
     		return false;
     	}
     	
-    	return super.equals((Employee) object) 
-			&& maintenances.equals(((MaintenanceResponsable) object).getMaintenances());
+    	return super.equals((Employee) object);
     }
 	
 	@Override
 	public int hashCode() {
-		return super.hashCode() + maintenances.hashCode();
+		return super.hashCode();
 	}
 }
 
