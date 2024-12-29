@@ -190,7 +190,7 @@ public abstract class Employee implements Serializable{
 	        && Objects.equals(password, other.password);
 	}
 	
-	public static Employee createEmployeeFromJson(
+	public static Employee createEmployee(
 	        String role,
 	        Optional<Integer> id,
 	        String matricule,
