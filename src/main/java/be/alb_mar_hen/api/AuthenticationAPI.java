@@ -106,5 +106,4 @@ public class AuthenticationAPI{
         String message = "{\"message\": \"Authentication service is up and running!\"}";
         return Response.ok(message).build();
     }
-
 }
