@@ -21,6 +21,8 @@ public class Site implements Serializable{
 	private String city;
 	
 	// Constructors
+	public Site() {}
+	
 	public Site(
 		Optional<Integer> id, 
 		String city,

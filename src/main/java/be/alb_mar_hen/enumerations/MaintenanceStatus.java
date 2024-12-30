@@ -21,4 +21,15 @@ public enum MaintenanceStatus {
                 throw new IllegalArgumentException("Unknown value for MaintenanceStatus: " + status);
         }
     }
+	
+	public static MaintenanceStatus fromDatabaseValue(int value) {
+		switch (value) {
+		case 1:
+			return MaintenanceStatus.IN_PROGRESS;
+		case 2:
+			return MaintenanceStatus.DONE;
+		default:
+			throw new IllegalArgumentException("Unknown value for MaintenanceStatus: " + value);
+		}
+	}
 }

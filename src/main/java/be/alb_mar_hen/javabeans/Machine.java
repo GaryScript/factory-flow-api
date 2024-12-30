@@ -35,9 +35,10 @@ public class Machine implements Serializable{
 	private MachineType machineType;
 	
 	// Constructors
+	public Machine() {}
+	
 	public Machine(
-		Optional<Integer> id, 
-		String type,
+		Optional<Integer> id,
 		MachineStatus status, 
 		String name, 
 		Zone zone,

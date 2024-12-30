@@ -30,6 +30,8 @@ public class Zone implements Serializable{
 		private Site site;
 		
 		// Constructors
+		public Zone() {}
+		
 		public Zone(
 			Optional<Integer> id, 
 			ZoneColor color, 

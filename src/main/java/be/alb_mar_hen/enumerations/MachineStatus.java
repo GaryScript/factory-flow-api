@@ -20,4 +20,19 @@ public enum MachineStatus {
 	            return TO_BE_REPLACED; // Comportement par défaut
 	    }
 	}
+	
+	public static MachineStatus fromDatabaseValue(int value) {
+		switch (value) {
+		case 1:
+			return OK;
+		case 2:
+			return IN_MAINTENANCE;
+		case 3:
+			return NEED_MAINTENANCE;
+		case 4:
+			return TO_BE_REPLACED;
+		default:
+			return TO_BE_REPLACED;
+		}
+	}
 }

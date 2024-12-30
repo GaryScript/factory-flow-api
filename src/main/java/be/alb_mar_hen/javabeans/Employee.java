@@ -37,6 +37,8 @@ public abstract class Employee implements Serializable{
 	private String lastName;
 	
 	// Constructors
+	public Employee() {}
+	
 	public Employee(
 		Optional<Integer> id, 
 		String matricule, 

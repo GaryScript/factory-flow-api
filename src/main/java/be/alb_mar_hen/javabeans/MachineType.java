@@ -23,6 +23,8 @@ public class MachineType implements Serializable{
 	private int daysBeforeMaintenance;
 
 	// Constructors
+	public MachineType() {}
+	
 	public MachineType(
 		Optional<Integer> id, 
 		String type, 
