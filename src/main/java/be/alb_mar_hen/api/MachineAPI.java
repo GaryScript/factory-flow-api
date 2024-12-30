@@ -3,21 +3,28 @@ package be.alb_mar_hen.api;
 import java.sql.Connection;
 import java.util.List;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
 import be.alb_mar_hen.daos.FactoryFlowConnection;
 import be.alb_mar_hen.daos.MachineDAO;
+import be.alb_mar_hen.daos.MaintenanceDAO;
 import be.alb_mar_hen.javabeans.Machine;
 
 @Path("/machines")
 public class MachineAPI {
+	
+	MachineDAO machineDAO = new MachineDAO(FactoryFlowConnection.getInstance());
+	
 
     @GET
     @Path("/getAll")
@@ -38,6 +45,28 @@ public class MachineAPI {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
                            .entity("Error retrieving machines")
+                           .build();
+        }
+    }
+    
+    @POST
+    @Path("/buyMachine")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response buyMachine(String response) {
+        try {
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new Jdk8Module());
+            
+            Machine machine = objectMapper.readValue(response, Machine.class);
+            int purchasingAgentId = objectMapper.readValue(response, JsonNode.class).get("purchasingAgentId").asInt();
+            machineDAO.createMachine(machine, purchasingAgentId);
+            
+            return Response.status(Response.Status.CREATED).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
+                           .entity("Error processing the machine purchase.")
                            .build();
         }
     }

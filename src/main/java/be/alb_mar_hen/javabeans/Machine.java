@@ -6,6 +6,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import be.alb_mar_hen.enumerations.MachineStatus;
@@ -14,6 +15,7 @@ import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Machine implements Serializable{
 	private static final long serialVersionUID = -4199465155836346172L;
 	// Validators
@@ -35,7 +37,13 @@ public class Machine implements Serializable{
 	private MachineType machineType;
 	
 	// Constructors
-	public Machine() {}
+	public Machine() 
+	{
+		numericValidator = new NumericValidator();
+		objectValidator = new ObjectValidator();
+		stringValidator = new StringValidator();
+        maintenances = new HashSet<>();
+	}
 	
 	public Machine(
 		Optional<Integer> id,

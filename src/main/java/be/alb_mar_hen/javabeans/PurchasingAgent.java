@@ -3,12 +3,15 @@ package be.alb_mar_hen.javabeans;
 import java.io.Serializable;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import be.alb_mar_hen.formatters.StringFormatter;
 import be.alb_mar_hen.javabeans.Employee;
 import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PurchasingAgent extends Employee implements Serializable{
 	private static final long serialVersionUID = -371441893465098035L;
 

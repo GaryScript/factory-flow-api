@@ -4,11 +4,15 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import be.alb_mar_hen.javabeans.MachineType;
 import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MachineType implements Serializable{
 	private static final long serialVersionUID = 2550265953796667462L;
 	// Validators
@@ -18,12 +22,17 @@ public class MachineType implements Serializable{
 	
 	// Attributes
 	private Optional<Integer> id;
+	@JsonProperty("type")
 	private String typeName;
 	private double price;
 	private int daysBeforeMaintenance;
 
 	// Constructors
-	public MachineType() {}
+	public MachineType() {
+		numericValidator = new NumericValidator();
+		stringValidator = new StringValidator();
+		objectValidator = new ObjectValidator();
+	}
 	
 	public MachineType(
 		Optional<Integer> id, 

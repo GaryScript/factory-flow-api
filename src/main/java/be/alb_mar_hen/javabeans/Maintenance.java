@@ -8,15 +8,20 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import be.alb_mar_hen.enumerations.MaintenanceStatus;
 import be.alb_mar_hen.javabeans.Maintenance;
+import be.alb_mar_hen.utils.CustomDateDeserializer;
+import be.alb_mar_hen.utils.OptionalLocalDateTimeDeserializer;
 import be.alb_mar_hen.validators.DateValidator;
 import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Maintenance implements Serializable{
 	//Constants
 	private static final long serialVersionUID = 9182766473158370811L;
@@ -31,7 +36,9 @@ public class Maintenance implements Serializable{
 	// Attributes
 	@JsonInclude(JsonInclude.Include.NON_ABSENT)
 	private Optional<Integer> id;
+	@JsonDeserialize(using = CustomDateDeserializer.class)
 	private LocalDateTime startDateTime;
+	@JsonDeserialize(using = OptionalLocalDateTimeDeserializer.class)
 	private Optional<LocalDateTime> endDateTime;
 	private Optional<Integer> duration;
 	private Optional<String> report;
@@ -45,7 +52,13 @@ public class Maintenance implements Serializable{
 	private MaintenanceResponsable maintenanceResponsable;
 		
 	// Constructors
-	public Maintenance() {}
+	public Maintenance() {
+		numericValidator = new NumericValidator();
+		stringValidator = new StringValidator();
+		objectValidator = new ObjectValidator();
+		dateValidator = new DateValidator();
+		maintenanceWorkers = new HashSet<>();
+	}
 	
 	public Maintenance(
 		Optional<Integer> id, 

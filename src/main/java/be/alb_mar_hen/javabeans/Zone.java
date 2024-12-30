@@ -6,6 +6,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import be.alb_mar_hen.enumerations.ZoneColor;
 import be.alb_mar_hen.javabeans.Machine;
 import be.alb_mar_hen.javabeans.Site;
@@ -14,6 +16,7 @@ import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Zone implements Serializable{
 	private static final long serialVersionUID = -2270925246678850136L;
 	// Validators
@@ -30,7 +33,11 @@ public class Zone implements Serializable{
 		private Site site;
 		
 		// Constructors
-		public Zone() {}
+		public Zone() {
+			numericValidator = new NumericValidator();
+			objectValidator = new ObjectValidator();
+			stringValidator = new StringValidator();
+		}
 		
 		public Zone(
 			Optional<Integer> id, 

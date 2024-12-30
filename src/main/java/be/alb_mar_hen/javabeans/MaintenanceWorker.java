@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import be.alb_mar_hen.formatters.StringFormatter;
 import be.alb_mar_hen.javabeans.Employee;
 import be.alb_mar_hen.javabeans.Maintenance;
@@ -13,6 +15,7 @@ import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MaintenanceWorker extends Employee implements Serializable{
 	private static final long serialVersionUID = -5505070112612987755L;
 
@@ -21,7 +24,10 @@ public class MaintenanceWorker extends Employee implements Serializable{
 	
 	
 	// Constructors
-	public MaintenanceWorker() {}
+	public MaintenanceWorker() {
+		super();
+		objectValidator = new ObjectValidator();
+	}
 	
 	public MaintenanceWorker(
 		Optional<Integer> id, 

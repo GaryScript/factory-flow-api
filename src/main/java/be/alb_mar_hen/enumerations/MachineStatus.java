@@ -4,7 +4,8 @@ public enum MachineStatus {
 	OK,
 	IN_MAINTENANCE,
 	NEED_MAINTENANCE,
-	TO_BE_REPLACED;
+	TO_BE_REPLACED,
+	REPLACED;
 	
 	public static MachineStatus fromString(String value) {
 	    switch (value) {
@@ -16,8 +17,10 @@ public enum MachineStatus {
 	            return NEED_MAINTENANCE;
 	        case "4":
 	            return TO_BE_REPLACED;
+	        case "5":
+	        	return REPLACED;
 	        default:
-	            return TO_BE_REPLACED; // Comportement par défaut
+	            return TO_BE_REPLACED;
 	    }
 	}
 	
@@ -31,6 +34,8 @@ public enum MachineStatus {
 			return NEED_MAINTENANCE;
 		case 4:
 			return TO_BE_REPLACED;
+		case 5:
+			return REPLACED;
 		default:
 			return TO_BE_REPLACED;
 		}
