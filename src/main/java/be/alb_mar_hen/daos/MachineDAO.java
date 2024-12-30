@@ -201,7 +201,8 @@ public class MachineDAO implements DAO<Machine>{
 	
 	@Override
 	public int create(Machine machine) {
-		return 0;
+		return 0; // using createMachine instead cause we need the 
+		// purchasing agent id, which can't be gotten from the machine itself
 	}
 	
 	public int createMachine(Machine machine, int purchasingAgentId) throws SQLException {
@@ -211,7 +212,7 @@ public class MachineDAO implements DAO<Machine>{
         	CallableStatement callableStatement = connection.prepareCall(sqlString);
         	
             callableStatement.setString(1, machine.getName());
-            callableStatement.setObject(2, machine.getMachineType().getId(), Types.INTEGER);
+            callableStatement.setInt(2, machine.getMachineType().getId().get());
             callableStatement.setInt(3, purchasingAgentId);
 
             // Register output parameter
