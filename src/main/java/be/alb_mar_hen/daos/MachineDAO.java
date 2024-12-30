@@ -207,27 +207,27 @@ public class MachineDAO implements DAO<Machine>{
 	
 	public int createMachine(Machine machine, int purchasingAgentId) throws SQLException {
         try {
-        	String sqlString = "{CALL sp_create_machine_and_order(?, ?, ?, ?)}";
+        	String sqlString = "{CALL sp_create_machine_and_order(?, ?, ?, ?, ?)}";
         	
         	CallableStatement callableStatement = connection.prepareCall(sqlString);
         	
-            callableStatement.setString(1, machine.getName());
-            callableStatement.setInt(2, machine.getMachineType().getId().get());
-            callableStatement.setInt(3, purchasingAgentId);
+        	callableStatement.setInt(1, machine.getId().get());
+            callableStatement.setString(2, machine.getName());
+            callableStatement.setInt(3, machine.getMachineType().getId().get());
+            callableStatement.setInt(4, purchasingAgentId);
 
             // Register output parameter
-            callableStatement.registerOutParameter(4, Types.INTEGER);
+            callableStatement.registerOutParameter(5, Types.INTEGER);
 
             callableStatement.execute();
 
-            return callableStatement.getInt(4);
+            return callableStatement.getInt(5);
         } catch (SQLException e) {
             // Log the error message
             System.err.println("Error executing sp_create_machine_and_order: " + e.getMessage());
             throw e;
         }
     }
-
 
 	@Override
 	public boolean delete(int id) {
