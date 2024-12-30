@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import be.alb_mar_hen.daos.DAO;
 import be.alb_mar_hen.daos.EmployeeDAO;
 import be.alb_mar_hen.formatters.StringFormatter;
@@ -15,6 +17,7 @@ import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public abstract class Employee implements Serializable{
 	private static final long serialVersionUID = -1185141045732080158L;
 	public final static String PASSWORD_REGEX = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}$";
@@ -37,7 +40,12 @@ public abstract class Employee implements Serializable{
 	private String lastName;
 	
 	// Constructors
-	public Employee() {}
+	public Employee() {
+		stringValidator = new StringValidator();
+		numericValidator = new NumericValidator();
+		objectValidator = new ObjectValidator();
+		stringFormatter = new StringFormatter();
+	}
 	
 	public Employee(
 		Optional<Integer> id, 

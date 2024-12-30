@@ -4,12 +4,15 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import be.alb_mar_hen.javabeans.MachineType;
 import be.alb_mar_hen.javabeans.Supplier;
 import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Supplier implements Serializable{
 	private static final long serialVersionUID = 2525597348707409918L;
 	// Validators

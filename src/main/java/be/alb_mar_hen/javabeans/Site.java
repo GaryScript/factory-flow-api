@@ -4,11 +4,14 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import be.alb_mar_hen.javabeans.Site;
 import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class Site implements Serializable{
 	private static final long serialVersionUID = 1253110849901374124L;
 	// Validators
@@ -21,7 +24,11 @@ public class Site implements Serializable{
 	private String city;
 	
 	// Constructors
-	public Site() {}
+	public Site() {
+		numericValidator = new NumericValidator();
+		objectValidator = new ObjectValidator();
+		stringValidator = new StringValidator();
+	}
 	
 	public Site(
 		Optional<Integer> id, 

@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
@@ -58,7 +59,7 @@ public class MachineAPI {
             objectMapper.registerModule(new Jdk8Module());
             
             Machine machine = objectMapper.readValue(response, Machine.class);
-            int purchasingAgentId = objectMapper.readValue("purchasingAgentId", Integer.class);
+            int purchasingAgentId = objectMapper.readValue(response, JsonNode.class).get("purchasingAgentId").asInt();
             machineDAO.createMachine(machine, purchasingAgentId);
             
             return Response.status(Response.Status.CREATED).build();
