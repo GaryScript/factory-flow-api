@@ -198,12 +198,35 @@ public class MachineDAO implements DAO<Machine>{
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 	@Override
-	public int create(Machine object) {
-		// TODO Auto-generated method stub
+	public int create(Machine machine) {
 		return 0;
 	}
+	
+	public int createMachine(Machine machine, int purchasingAgentId) throws SQLException {
+        try {
+        	String sqlString = "{CALL sp_create_machine_and_order(?, ?, ?, ?)}";
+        	
+        	CallableStatement callableStatement = connection.prepareCall(sqlString);
+        	
+            callableStatement.setString(1, machine.getName());
+            callableStatement.setObject(2, machine.getMachineType().getId(), Types.INTEGER);
+            callableStatement.setInt(3, purchasingAgentId);
+
+            // Register output parameter
+            callableStatement.registerOutParameter(4, Types.INTEGER);
+
+            callableStatement.execute();
+
+            return callableStatement.getInt(4);
+        } catch (SQLException e) {
+            // Log the error message
+            System.err.println("Error executing sp_create_machine_and_order: " + e.getMessage());
+            throw e;
+        }
+    }
+
 
 	@Override
 	public boolean delete(int id) {

@@ -56,10 +56,10 @@ public class MachineAPI {
         try {
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new Jdk8Module());
-
-            Machine machine = objectMapper.readValue(response, Machine.class);
             
-            machineDAO.create(machine);
+            Machine machine = objectMapper.readValue(response, Machine.class);
+            int purchasingAgentId = objectMapper.readValue("purchasingAgentId", Integer.class);
+            machineDAO.createMachine(machine, purchasingAgentId);
             
             return Response.status(Response.Status.CREATED).build();
         } catch (Exception e) {
