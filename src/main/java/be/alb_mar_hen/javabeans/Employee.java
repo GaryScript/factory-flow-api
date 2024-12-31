@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import be.alb_mar_hen.daos.DAO;
 import be.alb_mar_hen.daos.EmployeeDAO;

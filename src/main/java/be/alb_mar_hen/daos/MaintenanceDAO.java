@@ -11,6 +11,7 @@ import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
@@ -33,6 +34,7 @@ import be.alb_mar_hen.validators.DateValidator;
 import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;
+import oracle.jdbc.OracleCallableStatement;
 import oracle.jdbc.internal.OracleTypes;
 import oracle.jdbc.oracore.OracleType;
 
@@ -189,6 +191,7 @@ public class MaintenanceDAO implements DAO<Maintenance>{
 
 	    return maintenancesList;
 	}
+
 
 	@Override
 	public Maintenance find() {
