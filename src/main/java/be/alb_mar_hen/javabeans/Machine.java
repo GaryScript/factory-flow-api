@@ -96,7 +96,6 @@ public class Machine implements Serializable{
 		this.stringValidator = stringValidator;
 		this.maintenances = new HashSet<>();
 		this.zones = new HashSet<>();
-		System.out.println("Setting zones constructor" + zones);
 		setZones(zones);
 		setId(id);
 		setStatus(status);

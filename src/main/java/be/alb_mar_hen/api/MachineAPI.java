@@ -24,7 +24,7 @@ import be.alb_mar_hen.daos.MachineDAO;
 import be.alb_mar_hen.daos.MaintenanceDAO;
 import be.alb_mar_hen.javabeans.Machine;
 
-@Path("/machines")
+@Path("/machine")
 public class MachineAPI {
 	
 	MachineDAO machineDAO = new MachineDAO(FactoryFlowConnection.getInstance());
