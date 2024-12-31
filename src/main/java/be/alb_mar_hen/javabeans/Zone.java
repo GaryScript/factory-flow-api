@@ -6,6 +6,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import be.alb_mar_hen.enumerations.ZoneColor;
 import be.alb_mar_hen.javabeans.Machine;
 import be.alb_mar_hen.javabeans.Site;
@@ -14,6 +17,7 @@ import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "keyZone")
 public class Zone implements Serializable{
 	private static final long serialVersionUID = -2270925246678850136L;
 	// Validators

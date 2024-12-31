@@ -4,11 +4,15 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
 import be.alb_mar_hen.javabeans.MachineType;
 import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "keyMachineType")
 public class MachineType implements Serializable{
 	private static final long serialVersionUID = 2550265953796667462L;
 	// Validators

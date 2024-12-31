@@ -180,6 +180,12 @@ public class MaintenanceDAO implements DAO<Maintenance>{
 	                		MaintenanceStatus.fromDatabaseValue(status), 
 	                		machineObj, workers.stream().findFirst().get(), responsable, new NumericValidator(), new StringValidator(), new ObjectValidator(), new DateValidator());
 		        	
+					for (MaintenanceWorker worker : workers) {
+						if (worker != null && maintenance.getMaintenanceWorkers().stream().noneMatch(w -> w.getId().get() == worker.getId().get())) {
+							maintenance.addMaintenanceWorker(worker);
+						}
+					}
+					
 		        	maintenancesList.add(maintenance);
 		        }
 		        stmt.close();

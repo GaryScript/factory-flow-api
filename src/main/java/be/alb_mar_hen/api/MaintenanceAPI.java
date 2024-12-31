@@ -31,6 +31,8 @@ public class MaintenanceAPI {
 	        
 	        String jsonString = objectMapper.writeValueAsString(maintenances);
 	        
+	        System.out.println("Json : " + jsonString);
+	        
 			return Response.status(Status.OK)
 					.entity(jsonString)
 					.build();

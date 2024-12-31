@@ -8,7 +8,9 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import be.alb_mar_hen.enumerations.MaintenanceStatus;
 import be.alb_mar_hen.javabeans.Maintenance;
@@ -17,6 +19,7 @@ import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;
 
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "keyMaintenance")
 public class Maintenance implements Serializable{
 	//Constants
 	private static final long serialVersionUID = 9182766473158370811L;
@@ -40,7 +43,7 @@ public class Maintenance implements Serializable{
 	// Relations
 	private Set<MaintenanceWorker> maintenanceWorkers;
 	
-	@JsonBackReference
+	//@JsonBackReference
 	private Machine machine;
 	private MaintenanceResponsable maintenanceResponsable;
 		
