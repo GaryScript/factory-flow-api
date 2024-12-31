@@ -5,7 +5,12 @@ import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Optional;
 
+<<<<<<< HEAD
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+=======
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+>>>>>>> feature/get-maintenances
 
 import be.alb_mar_hen.javabeans.Machine;
 import be.alb_mar_hen.javabeans.Order;
@@ -15,7 +20,11 @@ import be.alb_mar_hen.validators.DateValidator;
 import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 
+<<<<<<< HEAD
 @JsonIgnoreProperties(ignoreUnknown = true)
+=======
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "keyOrder")
+>>>>>>> feature/get-maintenances
 public class Order implements Serializable{
 	//Constants
 	private static final long serialVersionUID = 7636931644402631422L;

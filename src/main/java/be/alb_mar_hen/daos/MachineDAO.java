@@ -57,7 +57,7 @@ public class MachineDAO implements DAO<Machine>{
 	    try {
 	        String call = "{CALL fetch_machine_data(?)}";
 	        stmt = connection.prepareCall(call);
-	        stmt.registerOutParameter(1, Types.ARRAY, "MACHINE_PACKAGE.MACHINE_DATA_TAB");
+	        stmt.registerOutParameter(1, Types.ARRAY, "MACHINE_DATA_TAB");
 	        stmt.execute();
 
 	        java.sql.Array machineArray = stmt.getArray(1);

@@ -6,8 +6,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import be.alb_mar_hen.enumerations.MachineStatus;
 import be.alb_mar_hen.javabeans.Machine;
@@ -15,7 +16,7 @@ import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "keyMachine")
 public class Machine implements Serializable{
 	
 	private static final long serialVersionUID = -4199465155836346172L;
@@ -31,7 +32,7 @@ public class Machine implements Serializable{
 	private String name;
 	
 	// Relations
-	@JsonManagedReference
+	//@JsonManagedReference
 	private Set<Maintenance> maintenances;
 	private Set<Zone> zones;
 	private MachineType machineType;
