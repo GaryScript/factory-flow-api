@@ -1,6 +1,8 @@
 package be.alb_mar_hen.api;
 
 import java.sql.Connection;
+import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 
 import javax.ws.rs.GET;
@@ -8,6 +10,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+
+import org.json.JSONArray;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
@@ -41,5 +45,25 @@ public class MachineAPI {
                            .build();
         }
     }
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getMachines_terry() {
+        try {
+        	Connection connection = FactoryFlowConnection.getInstance();
+            MachineDAO machineDAO = new MachineDAO(connection);
+            Collection<Machine> machines = machineDAO.findAll_terry();
 
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.registerModule(new Jdk8Module());
+
+            String machinesJson = objectMapper.writeValueAsString(machines);
+
+            return Response.status(Response.Status.OK).entity(machinesJson).build();
+        } catch (SQLException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Database error: " + e.getMessage()).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error processing data: " + e.getMessage()).build();
+        }
+    }
 }

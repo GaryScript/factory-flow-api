@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import be.alb_mar_hen.daos.DAO;
 import be.alb_mar_hen.daos.EmployeeDAO;
 import be.alb_mar_hen.formatters.StringFormatter;

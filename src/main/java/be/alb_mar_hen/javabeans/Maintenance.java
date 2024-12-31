@@ -77,6 +77,37 @@ public class Maintenance implements Serializable{
 		setMaintenanceResponsable(maintenanceResponsable);
 		addMaintenanceWorker(maintenanceWorker);
 	}
+	
+	public Maintenance(
+		Optional<Integer> id, 
+		LocalDateTime startDateTime, 
+		Optional<LocalDateTime> endDateTime,
+		Optional<Integer> duration, 
+		Optional<String> report, 
+		MaintenanceStatus status,
+		Machine machine, 
+		Set<MaintenanceWorker> maintenanceWorkers,
+		MaintenanceResponsable maintenanceResponsable,
+		NumericValidator numericValidator,
+		StringValidator stringValidator,
+		ObjectValidator objectValidator,
+		DateValidator dateValidator
+	) {
+		this.numericValidator = numericValidator;
+		this.stringValidator = stringValidator;
+		this.objectValidator = objectValidator;
+		this.dateValidator = dateValidator;
+		this.maintenanceWorkers = new HashSet<>();
+		setId(id);
+		setStartDateTime(startDateTime);
+		setEndDateTime(endDateTime);
+		setDuration(duration);
+		setReport(report);
+		setStatus(status);
+		setMachine(machine);
+		setMaintenanceResponsable(maintenanceResponsable);
+		setMaintenanceWorkers(maintenanceWorkers);
+	}
 
 	// Getters
 	public Optional<Integer> getId() {
@@ -205,6 +236,14 @@ public class Maintenance implements Serializable{
 	    if (this.maintenanceResponsable != responsable) {
 	        this.maintenanceResponsable = responsable;
 	    }
+	}
+	
+	public void setMaintenanceWorkers(Set<MaintenanceWorker> workers) {
+        if (!objectValidator.hasValue(workers)) {
+            throw new NullPointerException("Workers must have a value.");
+        }
+
+        workers.forEach(this::addMaintenanceWorker);
 	}
 	
 	// Methods
