@@ -5,12 +5,8 @@ import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
 
-<<<<<<< HEAD
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-=======
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
->>>>>>> feature/get-maintenances
 
 import be.alb_mar_hen.formatters.StringFormatter;
 import be.alb_mar_hen.javabeans.Employee;
@@ -20,11 +16,7 @@ import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;
 
-<<<<<<< HEAD
-@JsonIgnoreProperties(ignoreUnknown = true)
-=======
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "keyMaintenanceResponsable")
->>>>>>> feature/get-maintenances
 public class MaintenanceResponsable extends Employee implements Serializable{
 	//Constants
 	private static final long serialVersionUID = 4406992306206077202L;

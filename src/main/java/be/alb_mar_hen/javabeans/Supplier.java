@@ -4,12 +4,8 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
-<<<<<<< HEAD
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-=======
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
->>>>>>> feature/get-maintenances
 
 import be.alb_mar_hen.javabeans.MachineType;
 import be.alb_mar_hen.javabeans.Supplier;
@@ -17,11 +13,7 @@ import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;
 
-<<<<<<< HEAD
-@JsonIgnoreProperties(ignoreUnknown = true)
-=======
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "keySupplier")
->>>>>>> feature/get-maintenances
 public class Supplier implements Serializable{
 	private static final long serialVersionUID = 2525597348707409918L;
 	// Validators

@@ -4,23 +4,15 @@ import java.io.Serializable;
 import java.util.Objects;
 import java.util.Optional;
 
-<<<<<<< HEAD
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-=======
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
->>>>>>> feature/get-maintenances
 
 import be.alb_mar_hen.javabeans.Site;
 import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;
 
-<<<<<<< HEAD
-@JsonIgnoreProperties(ignoreUnknown = true)
-=======
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "keySite")
->>>>>>> feature/get-maintenances
 public class Site implements Serializable{
 	private static final long serialVersionUID = 1253110849901374124L;
 	// Validators
