@@ -332,28 +332,10 @@ public class MachineDAO implements DAO<Machine>{
 	            
 	            int maintenanceId = ((BigDecimal) maintenanceRowData[0]).intValue();
 	            LocalDateTime maintenanceStartDate = Conversion.extractLocalDateTime(maintenanceRowData[1]);
-	            LocalDateTime maintenanceEndDate = Conversion.extractLocalDateTime(maintenanceRowData[2]);
-	            int maintenanceDuration = ((BigDecimal) maintenanceRowData[3]).intValue();
-	            String maintenanceReport = (String) maintenanceRowData[4];
+	            Optional<LocalDateTime> maintenanceEndDate = Optional.ofNullable(Conversion.extractLocalDateTime(maintenanceRowData[2]));
+	            Optional<Integer> maintenanceDuration = Optional.ofNullable((BigDecimal) maintenanceRowData[3]).map(BigDecimal::intValue);
+	            Optional<String> maintenanceReport = Optional.ofNullable((String) maintenanceRowData[4]);
 	            int maintenanceStatus = ((BigDecimal) maintenanceRowData[5]).intValue();
-
-	            /*// Extract `machine` attributes
-	            Struct machineStruct = (Struct) maintenanceData[1];
-	            Object[] machineRowData = machineStruct.getAttributes();
-	            
-				Machine machine = new Machine(
-					Optional.of(((BigDecimal) machineRowData[0]).intValue()),
-					MachineStatus.fromDatabaseValue(((BigDecimal) machineRowData[1]).intValue()),
-					(String) machineRowData[2],
-					new HashSet<>(),
-					Optional.empty(),
-					null,
-					0, 
-					0,
-					new NumericValidator(), 
-					new ObjectValidator(), new
-					StringValidator()
-				);*/
 
 	            // Extract `maintenance_responsable` attributes
 	            Struct responsableStruct = (Struct) maintenanceData[2];
@@ -401,9 +383,9 @@ public class MachineDAO implements DAO<Machine>{
 	            Maintenance maintenance = new Maintenance(
 	                Optional.of(maintenanceId),
 	                maintenanceStartDate,
-	                Optional.of(maintenanceEndDate),
-	                Optional.of(maintenanceDuration),
-	                Optional.of(maintenanceReport),
+	                maintenanceEndDate,
+	                maintenanceDuration,
+	                maintenanceReport,
 	                MaintenanceStatus.fromDatabaseValue(maintenanceStatus),
 	                associtedMachine,
 	                workers,
