@@ -5,7 +5,8 @@ public enum MachineStatus {
 	IN_MAINTENANCE,
 	NEED_MAINTENANCE,
 	TO_BE_REPLACED,
-	REPLACED;
+	REPLACED,
+	NEED_VALIDATION;
 	
 	public static MachineStatus fromString(String value) {
 	    switch (value) {
@@ -36,6 +37,8 @@ public enum MachineStatus {
 			return TO_BE_REPLACED;
 		case 5:
 			return REPLACED;
+		case 6:
+			return NEED_VALIDATION;
 		default:
 			return TO_BE_REPLACED;
 		}

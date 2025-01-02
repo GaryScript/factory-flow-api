@@ -81,17 +81,34 @@ public class MachineAPI {
         	Connection connection = FactoryFlowConnection.getInstance();
             MachineDAO machineDAO = new MachineDAO(connection);
             Collection<Machine> machines = machineDAO.findAll_terry();
+            
+			if (machines.isEmpty()) {
+				return Response.status(Response.Status.NOT_FOUND.getStatusCode(), "No machines found.").build();
+			}
 
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.registerModule(new Jdk8Module());
 
             String machinesJson = objectMapper.writeValueAsString(machines);
 
-            return Response.status(Response.Status.OK).entity(machinesJson).build();
+            return Response
+        		.status(Response.Status.OK)
+        		.entity(machinesJson)
+        		.build();
         } catch (SQLException e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Database error: " + e.getMessage()).build();
+            return Response
+        		.status(
+    				Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), 
+    				"Database error: " + e.getMessage()
+				)
+        		.build();
         } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity("Error processing data: " + e.getMessage()).build();
+            return Response
+	    		.status(
+					Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), 
+					"Error processing data: " + e.getMessage()
+				)
+	    		.build();
         }
     }
 }
