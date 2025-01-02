@@ -166,7 +166,7 @@ public class MachineDAO implements DAO<Machine>{
 	                status,
 	                machineName,
 	                zone,
-	                Optional.of(machineId),
+	                Optional.of(1),
 	                machineTypeName,
 	                machineTypePrice,
 	                machineTypeDaysBeforeMaintenance,
@@ -205,7 +205,7 @@ public class MachineDAO implements DAO<Machine>{
 		// purchasing agent id, which can't be gotten from the machine itself
 	}
 	
-	public int createMachine(Machine machine, int purchasingAgentId) throws SQLException {
+	public int create(Machine machine, int purchasingAgentId) throws SQLException {
         try {
         	String sqlString = "{CALL sp_create_machine_and_order(?, ?, ?, ?, ?)}";
         	
@@ -223,8 +223,7 @@ public class MachineDAO implements DAO<Machine>{
 
             return callableStatement.getInt(5);
         } catch (SQLException e) {
-            // Log the error message
-            System.err.println("Error executing sp_create_machine_and_order: " + e.getMessage());
+            e.printStackTrace();
             throw e;
         }
     }
