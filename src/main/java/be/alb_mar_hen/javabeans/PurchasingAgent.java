@@ -4,22 +4,24 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.Optional;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
+
+
 import be.alb_mar_hen.daos.FactoryFlowConnection;
 import be.alb_mar_hen.daos.MachineDAO;
-import be.alb_mar_hen.daos.PurchasingAgentDAO;
 import be.alb_mar_hen.formatters.StringFormatter;
-import be.alb_mar_hen.javabeans.Employee;
 import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "keyPurchasingAgent")
 public class PurchasingAgent extends Employee implements Serializable{
 	private static final long serialVersionUID = -371441893465098035L;
 

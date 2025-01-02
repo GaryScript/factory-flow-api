@@ -6,9 +6,10 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import be.alb_mar_hen.enumerations.MachineStatus;
 import be.alb_mar_hen.javabeans.Machine;
@@ -16,9 +17,11 @@ import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "keyMachine")
 public class Machine implements Serializable{
+	
 	private static final long serialVersionUID = -4199465155836346172L;
+	
 	// Validators
 	NumericValidator numericValidator;
 	ObjectValidator objectValidator;
@@ -31,10 +34,8 @@ public class Machine implements Serializable{
 	private String name;
 	
 	// Relations
-	
-	@JsonManagedReference
+	//@JsonManagedReference
 	private Set<Maintenance> maintenances;
-	
 	private Set<Zone> zones;
 	private MachineType machineType;
 	
@@ -63,9 +64,42 @@ public class Machine implements Serializable{
 		this.numericValidator = numericValidator;
 		this.objectValidator = objectValidator;
 		this.stringValidator = stringValidator;
-		maintenances = new HashSet<>();
-		zones = new HashSet<>();
+		this.maintenances = new HashSet<>();
+		this.zones = new HashSet<>();
 		addZone(zone);
+		setId(id);
+		setStatus(status);
+		setName(name);
+		this.machineType = new MachineType(
+			machineTypeId, 
+			machineTypeName, 
+			machineTypePrice,
+			machineTypeDaysBeforeMaintenance, 
+			numericValidator, 
+			stringValidator, 
+			objectValidator
+		);
+	}
+	
+	public Machine(
+		Optional<Integer> id,
+		MachineStatus status, 
+		String name, 
+		Set<Zone> zones,
+		Optional<Integer> machineTypeId,
+		String machineTypeName,
+		double machineTypePrice,
+		int machineTypeDaysBeforeMaintenance,
+		NumericValidator numericValidator, 
+		ObjectValidator objectValidator,
+		StringValidator stringValidator
+	) {
+		this.numericValidator = numericValidator;
+		this.objectValidator = objectValidator;
+		this.stringValidator = stringValidator;
+		this.maintenances = new HashSet<>();
+		this.zones = new HashSet<>();
+		setZones(zones);
 		setId(id);
 		setStatus(status);
 		setName(name);
@@ -134,6 +168,14 @@ public class Machine implements Serializable{
 		this.name = name;
 	}
 	
+	public void setZones(Set<Zone> zones) {
+		if (!objectValidator.hasValue(zones)) {
+			throw new NullPointerException("Zones must have a value.");
+		}
+
+		zones.forEach(this::addZone);
+	}
+	
 	// Methods
 	public boolean addMaintenance(Maintenance maintenance) {
 		if(!objectValidator.hasValue(maintenance)) {
@@ -152,10 +194,8 @@ public class Machine implements Serializable{
 		if(!objectValidator.hasValue(zone)) {
 			throw new NullPointerException("Zone must have a value.");
 		}
-		
-		boolean added = zones.add(zone);
-		
-		return added;
+			
+		return zones.add(zone);
 	}
 
 	// Override methods

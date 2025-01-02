@@ -8,8 +8,9 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
 import be.alb_mar_hen.enumerations.MaintenanceStatus;
@@ -21,7 +22,7 @@ import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "keyMaintenance")
 public class Maintenance implements Serializable{
 	//Constants
 	private static final long serialVersionUID = 9182766473158370811L;
@@ -47,7 +48,7 @@ public class Maintenance implements Serializable{
 	// Relations
 	private Set<MaintenanceWorker> maintenanceWorkers;
 	
-	@JsonBackReference
+	//@JsonBackReference
 	private Machine machine;
 	private MaintenanceResponsable maintenanceResponsable;
 		
@@ -89,6 +90,37 @@ public class Maintenance implements Serializable{
 		setMachine(machine);
 		setMaintenanceResponsable(maintenanceResponsable);
 		addMaintenanceWorker(maintenanceWorker);
+	}
+	
+	public Maintenance(
+		Optional<Integer> id, 
+		LocalDateTime startDateTime, 
+		Optional<LocalDateTime> endDateTime,
+		Optional<Integer> duration, 
+		Optional<String> report, 
+		MaintenanceStatus status,
+		Machine machine, 
+		Set<MaintenanceWorker> maintenanceWorkers,
+		MaintenanceResponsable maintenanceResponsable,
+		NumericValidator numericValidator,
+		StringValidator stringValidator,
+		ObjectValidator objectValidator,
+		DateValidator dateValidator
+	) {
+		this.numericValidator = numericValidator;
+		this.stringValidator = stringValidator;
+		this.objectValidator = objectValidator;
+		this.dateValidator = dateValidator;
+		this.maintenanceWorkers = new HashSet<>();
+		setId(id);
+		setStartDateTime(startDateTime);
+		setEndDateTime(endDateTime);
+		setDuration(duration);
+		setReport(report);
+		setStatus(status);
+		setMachine(machine);
+		setMaintenanceResponsable(maintenanceResponsable);
+		setMaintenanceWorkers(maintenanceWorkers);
 	}
 
 	// Getters
@@ -218,6 +250,14 @@ public class Maintenance implements Serializable{
 	    if (this.maintenanceResponsable != responsable) {
 	        this.maintenanceResponsable = responsable;
 	    }
+	}
+	
+	public void setMaintenanceWorkers(Set<MaintenanceWorker> workers) {
+        if (!objectValidator.hasValue(workers)) {
+            throw new NullPointerException("Workers must have a value.");
+        }
+
+        workers.forEach(this::addMaintenanceWorker);
 	}
 	
 	// Methods
