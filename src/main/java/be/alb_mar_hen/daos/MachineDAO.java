@@ -45,7 +45,7 @@ public class MachineDAO implements DAO<Machine>{
 	    try {
 	        String call = "{CALL fetch_machine_data(?)}";
 	        stmt = connection.prepareCall(call);
-	        stmt.registerOutParameter(1, Types.ARRAY, "MACHINE_PACKAGE.MACHINE_DATA_TAB");
+	        stmt.registerOutParameter(1, Types.ARRAY, "MACHINE_DATA_TAB");
 	        stmt.execute();
 
 	        java.sql.Array machineArray = stmt.getArray(1);
@@ -95,7 +95,7 @@ public class MachineDAO implements DAO<Machine>{
 
 	                int maintenanceId = Conversion.extractInt(maintenanceAttributes[0]);
 	                LocalDateTime maintenanceStartDate = Conversion.extractLocalDateTime(maintenanceAttributes[1]);
-	                LocalDateTime maintenanceEndDate = Conversion.extractLocalDateTime(maintenanceAttributes[2]);
+	                Optional<LocalDateTime> maintenanceEndDate = Optional.ofNullable(Conversion.extractLocalDateTime(maintenanceAttributes[2]));
 	                int maintenanceDuration = Conversion.extractInt(maintenanceAttributes[3]);
 	                String maintenanceReport = null;
 	                Object maintenanceReportObject = maintenanceAttributes[4]; 
@@ -145,7 +145,7 @@ public class MachineDAO implements DAO<Machine>{
 	                Maintenance maintenance = new Maintenance(
 	                    Optional.of(maintenanceId),
 	                    maintenanceStartDate,
-	                    Optional.ofNullable(maintenanceEndDate),
+	                    maintenanceEndDate,
 	                    Optional.of(maintenanceDuration),
 	                    Optional.ofNullable(maintenanceReport),
 	                    maintenanceStatus,
