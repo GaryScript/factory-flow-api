@@ -29,7 +29,6 @@ public class MachineAPI {
 	
 	MachineDAO machineDAO = new MachineDAO(FactoryFlowConnection.getInstance());
 	
-
     @GET
     @Path("/getAll")
     @Produces(MediaType.APPLICATION_JSON)
@@ -74,6 +73,7 @@ public class MachineAPI {
                            .build();
         }
     }
+    
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMachines_terry() {

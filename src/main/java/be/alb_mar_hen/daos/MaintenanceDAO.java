@@ -172,13 +172,34 @@ public class MaintenanceDAO implements DAO<Maintenance>{
 					//Maintenance
 		        	int maintenanceId = ((BigDecimal) attributes[0]).intValue();
 	                LocalDateTime maintenanceStartDate = ((Timestamp) attributes[1]).toLocalDateTime();
-	                LocalDateTime maintenanceEndDate = ((Timestamp) attributes[2]).toLocalDateTime();
-	                int duration = ((BigDecimal) attributes[3]).intValue();
-	                String report = (String) attributes[4];
+	                
+	                Optional<LocalDateTime> maintenanceEndDate;
+	                
+					if (attributes[2] != null) {
+						maintenanceEndDate = Optional.of(((Timestamp) attributes[2]).toLocalDateTime());
+					} else {
+						maintenanceEndDate = Optional.empty();
+					}
+					
+					Optional<Integer> duration;
+					if(attributes[3] != null) {
+						duration = Optional.of(((BigDecimal) attributes[3]).intValue());
+					}else {
+						duration = Optional.empty();
+					}
+					
+					Optional<String> report;
+					if(attributes[4] != null) {
+						report = Optional.of((String) attributes[4]);
+					}
+				    else {
+				    	report = Optional.empty();
+				    }
+	                
 	                int status = ((BigDecimal) attributes[5]).intValue();
 	                
 	                Maintenance maintenance = new Maintenance(Optional.of(maintenanceId), maintenanceStartDate, 
-	                		Optional.of(maintenanceEndDate), Optional.of(duration), Optional.of(report), 
+	                		maintenanceEndDate, duration, report, 
 	                		MaintenanceStatus.fromDatabaseValue(status), 
 	                		machineObj, workers.stream().findFirst().get(), responsable, new NumericValidator(), new StringValidator(), new ObjectValidator(), new DateValidator());
 		        	
@@ -323,13 +344,32 @@ public class MaintenanceDAO implements DAO<Maintenance>{
 					//Maintenance
 		        	int maintenanceId = ((BigDecimal) attributes[0]).intValue();
 	                LocalDateTime maintenanceStartDate = ((Timestamp) attributes[1]).toLocalDateTime();
-	                LocalDateTime maintenanceEndDate = ((Timestamp) attributes[2]).toLocalDateTime();
-	                int duration = ((BigDecimal) attributes[3]).intValue();
-	                String report = (String) attributes[4];
+	                Optional<LocalDateTime> maintenanceEndDate;
+	                
+					if (attributes[2] != null) {
+						maintenanceEndDate = Optional.of(((Timestamp) attributes[2]).toLocalDateTime());
+					} else {
+						maintenanceEndDate = Optional.empty();
+					}
+					
+					Optional<Integer> duration;
+					if(attributes[3] != null) {
+						duration = Optional.of(((BigDecimal) attributes[3]).intValue());
+					}else {
+						duration = Optional.empty();
+					}
+					
+					Optional<String> report;
+					if(attributes[4] != null) {
+						report = Optional.of((String) attributes[4]);
+					}
+				    else {
+				    	report = Optional.empty();
+				    }
 	                int status = ((BigDecimal) attributes[5]).intValue();
 	                
 	                Maintenance maintenance = new Maintenance(Optional.of(maintenanceId), maintenanceStartDate, 
-	                		Optional.of(maintenanceEndDate), Optional.of(duration), Optional.of(report), 
+	                		maintenanceEndDate, duration, report, 
 	                		MaintenanceStatus.fromDatabaseValue(status), 
 	                		machineObj, workers.stream().findFirst().get(), responsable, new NumericValidator(), new StringValidator(), new ObjectValidator(), new DateValidator());
 		        	
