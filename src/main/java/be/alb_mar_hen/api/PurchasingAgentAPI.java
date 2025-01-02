@@ -15,7 +15,7 @@ import be.alb_mar_hen.daos.MachineDAO;
 import be.alb_mar_hen.daos.PurchasingAgentDAO;
 import be.alb_mar_hen.javabeans.PurchasingAgent;
 
-@Path("/purchasingAgents")
+@Path("/purchasingAgent")
 public class PurchasingAgentAPI {
 	
 	PurchasingAgentDAO purchasingAgentDAO = new PurchasingAgentDAO(FactoryFlowConnection.getInstance());
