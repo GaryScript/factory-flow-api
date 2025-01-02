@@ -25,7 +25,6 @@ public class MachineAPI {
 	
 	MachineDAO machineDAO = new MachineDAO(FactoryFlowConnection.getInstance());
 	
-
     @GET
     @Path("/getAll")
     @Produces(MediaType.APPLICATION_JSON)
@@ -48,27 +47,4 @@ public class MachineAPI {
                            .build();
         }
     }
-    
-    @POST
-    @Path("/buyMachine")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response buyMachine(String response) {
-        try {
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new Jdk8Module());
-            
-            Machine machine = objectMapper.readValue(response, Machine.class);
-            int purchasingAgentId = objectMapper.readValue(response, JsonNode.class).get("purchasingAgentId").asInt();
-            machineDAO.createMachine(machine, purchasingAgentId);
-            
-            return Response.status(Response.Status.CREATED).build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                           .entity("Error processing the machine purchase.")
-                           .build();
-        }
-    }
-
 }
