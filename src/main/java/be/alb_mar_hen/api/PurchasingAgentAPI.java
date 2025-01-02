@@ -43,5 +43,4 @@ public class PurchasingAgentAPI {
 	        return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(errorResponse.toString()).build();
 	    }
 	}
-
 }
