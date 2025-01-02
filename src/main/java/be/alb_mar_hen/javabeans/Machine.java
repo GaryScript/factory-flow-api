@@ -8,6 +8,7 @@ import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import be.alb_mar_hen.enumerations.MachineStatus;
 import be.alb_mar_hen.javabeans.Machine;
@@ -24,6 +25,7 @@ public class Machine implements Serializable{
 	StringValidator stringValidator;
 	
 	// Attributes
+	@JsonProperty("id")
 	private Optional<Integer> id;
 	private MachineStatus status;
 	private String name;
