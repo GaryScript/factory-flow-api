@@ -359,7 +359,7 @@ public class MaintenanceDAO implements DAO<Maintenance>{
 
 
 	@Override
-	public Maintenance find() {
+	public Maintenance find(int id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
