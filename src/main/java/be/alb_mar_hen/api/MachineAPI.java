@@ -63,7 +63,7 @@ public class MachineAPI {
             
             Machine machine = objectMapper.readValue(response, Machine.class);
             int purchasingAgentId = objectMapper.readValue(response, JsonNode.class).get("purchasingAgentId").asInt();
-            machineDAO.createMachine(machine, purchasingAgentId);
+            machineDAO.create(machine, purchasingAgentId);
             
             return Response.status(Response.Status.CREATED).build();
         } catch (Exception e) {

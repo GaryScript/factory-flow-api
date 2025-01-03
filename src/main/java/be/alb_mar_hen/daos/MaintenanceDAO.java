@@ -378,7 +378,21 @@ public class MaintenanceDAO implements DAO<Maintenance>{
 
 	@Override
 	public boolean update(Maintenance object) {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+			CallableStatement stmt = connection.prepareCall("{ ? = call Pkg_maintenances.finalize_maintenance(?, ?) }");
+			
+			stmt.registerOutParameter(1, OracleTypes.INTEGER);
+			stmt.setInt(2, object.getId().get());
+			stmt.setString(3, object.getReport().get());
+			
+			stmt.execute();
+			
+			System.out.println("Nombre de lignes affectées  : " + stmt.getInt(1));
+			
+			return stmt.getInt(1) == 1;	
+		}catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }
