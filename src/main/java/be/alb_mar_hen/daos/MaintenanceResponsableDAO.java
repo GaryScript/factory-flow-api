@@ -21,7 +21,7 @@ public class MaintenanceResponsableDAO implements DAO<MaintenanceResponsable>{
 	}
 
 	@Override
-	public MaintenanceResponsable find() {
+	public MaintenanceResponsable find(int id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
