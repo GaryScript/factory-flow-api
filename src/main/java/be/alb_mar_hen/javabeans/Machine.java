@@ -7,7 +7,8 @@ import java.util.Optional;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import be.alb_mar_hen.enumerations.MachineStatus;
@@ -16,6 +17,7 @@ import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
 import be.alb_mar_hen.validators.StringValidator;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "keyMachine")
 public class Machine implements Serializable{
 	
@@ -27,6 +29,7 @@ public class Machine implements Serializable{
 	StringValidator stringValidator;
 	
 	// Attributes
+	@JsonProperty("id")
 	private Optional<Integer> id;
 	private MachineStatus status;
 	private String name;
@@ -44,6 +47,7 @@ public class Machine implements Serializable{
 		objectValidator = new ObjectValidator();
 		stringValidator = new StringValidator();
         maintenances = new HashSet<>();
+        zones = new HashSet<>();
 	}
 	
 	public Machine(

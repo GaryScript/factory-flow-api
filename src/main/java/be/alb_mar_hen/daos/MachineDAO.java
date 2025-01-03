@@ -107,7 +107,7 @@ public class MachineDAO implements DAO<Machine>{
 
 	                int maintenanceId = Conversion.extractInt(maintenanceAttributes[0]);
 	                LocalDateTime maintenanceStartDate = Conversion.extractLocalDateTime(maintenanceAttributes[1]);
-	                LocalDateTime maintenanceEndDate = Conversion.extractLocalDateTime(maintenanceAttributes[2]);
+	                Optional<LocalDateTime> maintenanceEndDate = Optional.ofNullable(Conversion.extractLocalDateTime(maintenanceAttributes[2]));
 	                int maintenanceDuration = Conversion.extractInt(maintenanceAttributes[3]);
 	                String maintenanceReport = null;
 	                Object maintenanceReportObject = maintenanceAttributes[4]; 
@@ -157,7 +157,7 @@ public class MachineDAO implements DAO<Machine>{
 	                Maintenance maintenance = new Maintenance(
 	                    Optional.of(maintenanceId),
 	                    maintenanceStartDate,
-	                    Optional.ofNullable(maintenanceEndDate),
+	                    maintenanceEndDate,
 	                    Optional.of(maintenanceDuration),
 	                    Optional.ofNullable(maintenanceReport),
 	                    maintenanceStatus,
@@ -178,7 +178,7 @@ public class MachineDAO implements DAO<Machine>{
 	                status,
 	                machineName,
 	                zone,
-	                Optional.of(machineId),
+	                Optional.of(1),
 	                machineTypeName,
 	                machineTypePrice,
 	                machineTypeDaysBeforeMaintenance,
@@ -418,7 +418,7 @@ public class MachineDAO implements DAO<Machine>{
 		// purchasing agent id, which can't be gotten from the machine itself
 	}
 	
-	public int createMachine(Machine machine, int purchasingAgentId) throws SQLException {
+	public int create(Machine machine, int purchasingAgentId) throws SQLException {
         try {
         	String sqlString = "{CALL sp_create_machine_and_order(?, ?, ?, ?, ?)}";
         	
@@ -436,8 +436,7 @@ public class MachineDAO implements DAO<Machine>{
 
             return callableStatement.getInt(5);
         } catch (SQLException e) {
-            // Log the error message
-            System.err.println("Error executing sp_create_machine_and_order: " + e.getMessage());
+            e.printStackTrace();
             throw e;
         }
     }
