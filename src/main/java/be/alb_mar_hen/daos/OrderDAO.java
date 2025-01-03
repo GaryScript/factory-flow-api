@@ -94,7 +94,6 @@ public class OrderDAO implements DAO<Order>{
 	    Optional<Integer> supplierId = Optional.of(((BigDecimal) attributes[0]).intValue()); // ID
 	    String name = (String) attributes[2]; // NAME
 
-	    // Construire et retourner l'objet Supplier
 	    return new Supplier(
 	        supplierId,
 	        name,
