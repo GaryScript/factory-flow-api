@@ -21,7 +21,7 @@ public class ZoneDAO implements DAO<Zone>{
 	}
 
 	@Override
-	public Zone find() {
+	public Zone find(int id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

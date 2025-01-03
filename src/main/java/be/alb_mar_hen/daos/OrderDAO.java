@@ -21,7 +21,7 @@ public class OrderDAO implements DAO<Order>{
 	}
 
 	@Override
-	public Order find() {
+	public Order find(int id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

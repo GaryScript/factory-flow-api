@@ -4,7 +4,7 @@ import java.util.List;
 
 public interface DAO<T> {
 	public List<T> findall() throws Exception;
-	public T find();
+	public T find(int id);
 	public int create(T object);
 	public boolean delete(int id);
 	public boolean update(T object);
