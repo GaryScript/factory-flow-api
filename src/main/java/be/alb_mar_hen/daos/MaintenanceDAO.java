@@ -30,6 +30,7 @@ import be.alb_mar_hen.javabeans.Maintenance;
 import be.alb_mar_hen.javabeans.MaintenanceResponsable;
 import be.alb_mar_hen.javabeans.MaintenanceWorker;
 import be.alb_mar_hen.javabeans.Zone;
+import be.alb_mar_hen.utils.Conversion;
 import be.alb_mar_hen.validators.DateValidator;
 import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
@@ -173,28 +174,11 @@ public class MaintenanceDAO implements DAO<Maintenance>{
 		        	int maintenanceId = ((BigDecimal) attributes[0]).intValue();
 	                LocalDateTime maintenanceStartDate = ((Timestamp) attributes[1]).toLocalDateTime();
 	                
-	                Optional<LocalDateTime> maintenanceEndDate;
-	                
-					if (attributes[2] != null) {
-						maintenanceEndDate = Optional.of(((Timestamp) attributes[2]).toLocalDateTime());
-					} else {
-						maintenanceEndDate = Optional.empty();
-					}
+	                Optional<LocalDateTime> maintenanceEndDate = Optional.ofNullable(Conversion.extractLocalDateTime(attributes[2]));
 					
-					Optional<Integer> duration;
-					if(attributes[3] != null) {
-						duration = Optional.of(((BigDecimal) attributes[3]).intValue());
-					}else {
-						duration = Optional.empty();
-					}
-					
-					Optional<String> report;
-					if(attributes[4] != null) {
-						report = Optional.of((String) attributes[4]);
-					}
-				    else {
-				    	report = Optional.empty();
-				    }
+					Optional<Integer> duration = Optional.ofNullable((BigDecimal) attributes[3]).map(BigDecimal::intValue);
+
+					Optional<String> report = Optional.ofNullable((String) attributes[4]);
 	                
 	                int status = ((BigDecimal) attributes[5]).intValue();
 	                
@@ -344,28 +328,12 @@ public class MaintenanceDAO implements DAO<Maintenance>{
 					//Maintenance
 		        	int maintenanceId = ((BigDecimal) attributes[0]).intValue();
 	                LocalDateTime maintenanceStartDate = ((Timestamp) attributes[1]).toLocalDateTime();
-	                Optional<LocalDateTime> maintenanceEndDate;
-	                
-					if (attributes[2] != null) {
-						maintenanceEndDate = Optional.of(((Timestamp) attributes[2]).toLocalDateTime());
-					} else {
-						maintenanceEndDate = Optional.empty();
-					}
+	                Optional<LocalDateTime> maintenanceEndDate = Optional.ofNullable(Conversion.extractLocalDateTime(attributes[2]));
 					
-					Optional<Integer> duration;
-					if(attributes[3] != null) {
-						duration = Optional.of(((BigDecimal) attributes[3]).intValue());
-					}else {
-						duration = Optional.empty();
-					}
-					
-					Optional<String> report;
-					if(attributes[4] != null) {
-						report = Optional.of((String) attributes[4]);
-					}
-				    else {
-				    	report = Optional.empty();
-				    }
+					Optional<Integer> duration = Optional.ofNullable((BigDecimal) attributes[3]).map(BigDecimal::intValue);
+
+					Optional<String> report = Optional.ofNullable((String) attributes[4]);
+
 	                int status = ((BigDecimal) attributes[5]).intValue();
 	                
 	                Maintenance maintenance = new Maintenance(Optional.of(maintenanceId), maintenanceStartDate, 
