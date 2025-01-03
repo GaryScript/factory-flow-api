@@ -25,8 +25,6 @@ public class Order implements Serializable{
 	private DateValidator dateValidator;
 	private ObjectValidator objectValidator;
 	
-	// Attributes
-	private Optional<Integer> id;
 	private LocalDateTime orderDateTime;
 	
 	// Relations
@@ -38,7 +36,6 @@ public class Order implements Serializable{
 	public Order() {}
 	
 	public Order(
-		Optional<Integer> id, 
 		LocalDateTime orderDate, 
 		Supplier supplier,
 		PurchasingAgent purchasingAgent,
@@ -50,16 +47,10 @@ public class Order implements Serializable{
 		this.numericValidator = numericValidator;
 		this.dateValidator = dateValidator;
 		this.objectValidator = objectValidator;
-		setId(id);
 		setOrder(orderDate);
 		setMachine(machine);
 		setPurchasingAgent(purchasingAgent);
 		setSupplier(supplier);
-	}
-	
-	// Getters
-	public Optional<Integer> getId() {
-		return id;
 	}
 	
 	public LocalDateTime getOrder() {
@@ -77,20 +68,7 @@ public class Order implements Serializable{
 	public Machine getMachine() {
 		return machine;
 	}
-	
-	// Setters
-	public void setId(Optional<Integer> id) {
-		if (!objectValidator.hasValue(id)) {
-			throw new NullPointerException("Id must have a value.");
-		}
 		
-	    if (!numericValidator.isPositiveOrEqualToZero(id)) {
-	        throw new IllegalArgumentException("Id must be greater than or equal to 0");
-	    }
-	    
-	    this.id = id;
-	}
-	
 	public void setOrder(LocalDateTime orderDate) {
 		if(!objectValidator.hasValue(orderDate)) {
 			throw new NullPointerException("The orderDate must have a value.");
@@ -120,17 +98,18 @@ public class Order implements Serializable{
 	}
 	
 	public void setSupplier(Supplier supplier) {
-		if(objectValidator.hasValue(supplier)) {
-			throw new NullPointerException("Supplier must have a value.");
-		}
-		
-		this.supplier = supplier;
+	    if (!objectValidator.hasValue(supplier)) {
+	        throw new NullPointerException("Supplier must have a value.");
+	    }
+	    
+	    this.supplier = supplier;
 	}
+
 
 	// Override methods
 	@Override
 	public String toString() {
-		return "Order [id=" + id.orElse(null) + 
+		return 
 			", orderDateTime=" + orderDateTime + 
 			", supplier=" + supplier + 
 			", purchasingAgent=" + purchasingAgent + 
@@ -139,7 +118,7 @@ public class Order implements Serializable{
 
 	@Override
 	public int hashCode() {
-		return Objects.hash(id.orElse(0), machine, orderDateTime, purchasingAgent, supplier);
+		return Objects.hash( machine, orderDateTime, purchasingAgent, supplier);
 	}
 
 	@Override
@@ -156,8 +135,8 @@ public class Order implements Serializable{
 		}
 		
 		Order other = (Order) obj;
-		return Objects.equals(id.orElse(0), other.id.orElse(0))
-			&& Objects.equals(machine, other.machine)
+		return 
+			Objects.equals(machine, other.machine)
 			&& Objects.equals(orderDateTime, other.orderDateTime)
 			&& Objects.equals(purchasingAgent, other.purchasingAgent) 
 			&& Objects.equals(supplier, other.supplier);
