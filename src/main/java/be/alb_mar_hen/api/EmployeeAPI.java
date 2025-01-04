@@ -1,15 +1,12 @@
 package be.alb_mar_hen.api;
 
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.util.ArrayList;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -28,8 +25,8 @@ import be.alb_mar_hen.javabeans.MaintenanceWorker;
 import be.alb_mar_hen.javabeans.PurchasingAgent;
 
 
-@Path("/login")
-public class AuthenticationAPI{
+@Path("/Employee")
+public class EmployeeAPI{
 	
 	@POST
 	@Path("/authenticate")
