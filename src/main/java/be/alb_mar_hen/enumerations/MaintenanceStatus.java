@@ -19,9 +19,9 @@ public enum MaintenanceStatus {
             case "1":
                 return MaintenanceStatus.IN_PROGRESS;  
             case "2":
-                return MaintenanceStatus.DONE;  
-            case "3":
-                return MaintenanceStatus.PENDING_VALIDATION;
+                return MaintenanceStatus.DONE; 
+			case "3":
+				return MaintenanceStatus.PENDING_VALIDATION;
             default:
                 throw new IllegalArgumentException("Unknown value for MaintenanceStatus: " + status);
         }
