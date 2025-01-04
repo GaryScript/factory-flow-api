@@ -13,6 +13,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 
+import be.alb_mar_hen.daos.MaintenanceDAO;
 import be.alb_mar_hen.enumerations.MaintenanceStatus;
 import be.alb_mar_hen.javabeans.Maintenance;
 import be.alb_mar_hen.utils.CustomDateDeserializer;
@@ -269,6 +270,10 @@ public class Maintenance implements Serializable{
 	    boolean added = maintenanceWorkers.add(worker);
 
 	    return added;
+	}
+	
+	public boolean updateInDatabase(MaintenanceDAO dao) {
+		return dao.update(this);
 	}
 	
 	//Override methods

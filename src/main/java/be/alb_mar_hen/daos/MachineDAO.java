@@ -248,7 +248,7 @@ public class MachineDAO implements DAO<Machine>{
 		return machine;
 	}
 	
-	private Machine getMachineFromResultSet_terry(Struct machineRow) throws SQLException {
+	Machine getMachineFromResultSet_terry(Struct machineRow) throws SQLException {
 	    // Récupérer les attributs de la machine (dans l'ordre défini dans MACHINE_RECORD)
 	    Object[] machineAttributes = machineRow.getAttributes();
 
