@@ -25,7 +25,7 @@ import be.alb_mar_hen.javabeans.MaintenanceWorker;
 import be.alb_mar_hen.javabeans.PurchasingAgent;
 
 
-@Path("/Employee")
+@Path("/employee")
 public class EmployeeAPI{
 	
 	@POST
