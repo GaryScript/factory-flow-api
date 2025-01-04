@@ -29,7 +29,6 @@ import be.alb_mar_hen.javabeans.PurchasingAgent;
 public class EmployeeAPI{
 	
 	@POST
-	@Path("/authenticate")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response authenticateUser(String jsonInput) {
