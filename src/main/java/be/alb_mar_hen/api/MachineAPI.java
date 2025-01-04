@@ -31,29 +31,6 @@ public class MachineAPI {
 	
 	MachineDAO machineDAO = new MachineDAO(FactoryFlowConnection.getInstance());
 	
-    @GET
-    @Path("/getAll")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getAllMachines() {
-        try {
-        	Connection connection = FactoryFlowConnection.getInstance();
-            MachineDAO machineDAO = new MachineDAO(connection);
-            List<Machine> machines = machineDAO.findall();
-
-            ObjectMapper objectMapper = new ObjectMapper();
-            objectMapper.registerModule(new Jdk8Module());
-
-            String machinesJson = objectMapper.writeValueAsString(machines);
-
-            return Response.ok(machinesJson).build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR)
-                           .entity("Error retrieving machines")
-                           .build();
-        }
-    }
-    
     @POST
     @Path("/buyMachine")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -112,7 +89,7 @@ public class MachineAPI {
    
     @GET
     @Produces(MediaType.APPLICATION_JSON)
-    public Response getMachines_terry() {
+    public Response getMachines() {
         try {
             Collection<Machine> machines = machineDAO.findAll_terry();
             
