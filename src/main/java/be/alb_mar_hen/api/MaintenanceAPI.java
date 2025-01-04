@@ -62,8 +62,6 @@ public class MaintenanceAPI {
 			
 			String jsonString = objectMapper.writeValueAsString(maintenances);
 
-			System.out.println("Json dans get for worker id: " + jsonString);
-
 			return Response.status(Status.OK).entity(jsonString).build();
 		} catch (Exception e) {
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
@@ -85,7 +83,7 @@ public class MaintenanceAPI {
 			
 			Maintenance maintenance = objectMapper.readValue(maintenanceJson, Maintenance.class);
 
-			if(maintenanceDAO.update(maintenance)) {
+			if(maintenance.updateInDatabase(maintenanceDAO)) {
 				return Response.status(Status.OK).build();
             }else {
             	return Response.status(Status.INTERNAL_SERVER_ERROR).build();

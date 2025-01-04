@@ -14,12 +14,12 @@ public enum MaintenanceStatus {
                 return MaintenanceStatus.IN_PROGRESS;
             case "DONE":
                 return MaintenanceStatus.DONE;
+            case "PENDING_VALIDATION":
+                return MaintenanceStatus.PENDING_VALIDATION;
             case "1":
                 return MaintenanceStatus.IN_PROGRESS;  
             case "2":
                 return MaintenanceStatus.DONE; 
-			case "PENDING_VALIDATION":
-				return MaintenanceStatus.PENDING_VALIDATION;
 			case "3":
 				return MaintenanceStatus.PENDING_VALIDATION;
             default:
