@@ -310,7 +310,23 @@ public class MachineDAO implements DAO<Machine>{
 
 	@Override
 	public boolean update(Machine object) {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+			CallableStatement stmt = connection.prepareCall("BEGIN ? := pkg_machines.update_machine(?, ?, ?, ?); END;");
+			
+			stmt.registerOutParameter(1, Types.INTEGER);
+			stmt.setInt(2, object.getId().get());
+			stmt.setInt(3, object.getStatus().ordinal() + 1);
+			stmt.setString(4, object.getName());
+			stmt.setInt(5, object.getMachineType().getId().get());
+			
+			stmt.execute();
+			
+			System.out.println("Nombre de lignes modifiées (machineAPI update()) = " + stmt.getInt(1));
+			
+			return stmt.getInt(1) == 1;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }
