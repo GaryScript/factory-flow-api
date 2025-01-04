@@ -8,6 +8,7 @@ import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -64,7 +65,7 @@ public class MachineAPI {
 			ObjectValidator objValidator = new ObjectValidator();
 			
 			if (!objValidator.hasValue(machine)) {
-				return Response.status(Response.Status.NOT_FOUND.getStatusCode(), "No machines found.").build();
+				return RequestFactory.createNotFoundResponse("Machine not found.");
 			}
 
 			ObjectMapper objectMapper = new ObjectMapper();
@@ -72,18 +73,10 @@ public class MachineAPI {
 
 			String machineJson = objectMapper.writeValueAsString(machine);
 
-			return Response
-	        		.status(Response.Status.OK)
-	        		.entity(machineJson)
-	        		.build();		
+			return RequestFactory.createOkResponse(machineJson);		
 		} catch (Exception e) {
 			e.printStackTrace();
-			return Response
-				.status(
-					Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), 
-					"Error retrieving machine: " + e.getMessage()
-				)
-				.build();
+			return RequestFactory.createServerErrorResponse("Error retrieving machine: " + e.getMessage());
 		}
 	}
    
@@ -94,7 +87,7 @@ public class MachineAPI {
             Collection<Machine> machines = machineDAO.findAll_terry();
             
 			if (machines.isEmpty()) {
-				return Response.status(Response.Status.NOT_FOUND.getStatusCode(), "No machines found.").build();
+				return RequestFactory.createNotFoundResponse("No machines found.");
 			}
 
             ObjectMapper objectMapper = new ObjectMapper();
@@ -102,24 +95,35 @@ public class MachineAPI {
 
             String machinesJson = objectMapper.writeValueAsString(machines);
 
-            return Response
-        		.status(Response.Status.OK)
-        		.entity(machinesJson)
-        		.build();
+            return RequestFactory.createOkResponse(machinesJson);
         } catch (SQLException e) {
-            return Response
-        		.status(
-    				Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), 
-    				"Database error: " + e.getMessage()
-				)
-        		.build();
+            return RequestFactory.createServerErrorResponse("Error retrieving machines: " + e.getMessage());
         } catch (Exception e) {
-            return Response
-	    		.status(
-					Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), 
-					"Error processing data: " + e.getMessage()
-				)
-	    		.build();
+            return RequestFactory.createServerErrorResponse("Error retrieving machines: " + e.getMessage());
         }
     }
+    
+    @PUT
+    @Consumes(MediaType.APPLICATION_JSON)
+	public Response updateMachine(String machineJson) {
+    	ObjectValidator objValidator = new ObjectValidator();
+    	if (!objValidator.hasValue(machineJson)) {
+    		return RequestFactory.createBadRequestResponse("No machine data provided.");
+    	}
+    	
+		try {
+			ObjectMapper objectMapper = new ObjectMapper();
+			objectMapper.registerModule(new Jdk8Module());
+
+			Machine machine = objectMapper.readValue(machineJson, Machine.class);
+			boolean isMachineUpdated = machine.updateInDatabase(machineDAO);
+			if (!isMachineUpdated)
+                return RequestFactory.createServerErrorResponse("Failed to update machine status.");
+                
+			return RequestFactory.createOkResponse();
+		} catch (Exception e) {
+			e.printStackTrace();
+			return RequestFactory.createServerErrorResponse("Error updating machine: " + e.getMessage());
+		}
+	}
 }

@@ -379,11 +379,15 @@ public class MaintenanceDAO implements DAO<Maintenance>{
 	@Override
 	public boolean update(Maintenance object) {
 		try {
-			CallableStatement stmt = connection.prepareCall("{ ? = call Pkg_maintenances.finalize_maintenance(?, ?) }");
+			CallableStatement stmt = connection.prepareCall("{ ? = call Pkg_maintenances.update_maintenance(?, ?, ?, ?, ?, ?) }");
 			
 			stmt.registerOutParameter(1, OracleTypes.INTEGER);
 			stmt.setInt(2, object.getId().get());
-			stmt.setString(3, object.getReport().get());
+			stmt.setTimestamp(3, Timestamp.valueOf(object.getStartDateTime()));
+			stmt.setTimestamp(4, object.getEndDateTime().isPresent() ? Timestamp.valueOf(object.getEndDateTime().get()) : null);
+			stmt.setInt(5, object.getDuration().orElse(0));
+			stmt.setString(6, object.getReport().get());
+			stmt.setInt(7, object.getStatus().ordinal() + 1);
 			
 			stmt.execute();
 			

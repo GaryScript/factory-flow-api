@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import be.alb_mar_hen.daos.MachineDAO;
 import be.alb_mar_hen.enumerations.MachineStatus;
 import be.alb_mar_hen.javabeans.Machine;
 import be.alb_mar_hen.validators.NumericValidator;
@@ -198,6 +199,10 @@ public class Machine implements Serializable{
 		}
 			
 		return zones.add(zone);
+	}
+	
+	public boolean updateInDatabase(MachineDAO machineDAO) {
+		return machineDAO.update(this);
 	}
 
 	// Override methods
