@@ -79,8 +79,6 @@ public class MaintenanceAPI {
 			ObjectMapper objectMapper = new ObjectMapper();
 			objectMapper.registerModule(new Jdk8Module());
 			
-			System.out.println("JSON DANS PUT : " + maintenanceJson);
-			
 			Maintenance maintenance = objectMapper.readValue(maintenanceJson, Maintenance.class);
 
 			if(maintenance.updateInDatabase(maintenanceDAO)) {
