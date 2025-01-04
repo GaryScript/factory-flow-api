@@ -229,7 +229,26 @@ public class MachineDAO implements DAO<Machine>{
 	    return machines;
 	}
 	
-	Machine getMachineFromResultSet_terry(Struct machineRow) throws SQLException {
+	@Override
+	public Machine find(int id) {
+		String sql = "BEGIN ? := PKG_MACHINES.get_machine_by_id(?); END;";
+		Machine machine = null;
+		
+		try (CallableStatement stmt = connection.prepareCall(sql)) {
+            stmt.registerOutParameter(1, OracleTypes.STRUCT, "PKG_MACHINES.MACHINE_RECORD");
+            stmt.setInt(2, id);
+            stmt.execute();
+            
+            Struct machineRow = (Struct) stmt.getObject(1);
+            machine = getMachineFromResultSet_terry(machineRow);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+		
+		return machine;
+	}
+	
+	 Machine getMachineFromResultSet_terry(Struct machineRow) throws SQLException {
 	    // Récupérer les attributs de la machine (dans l'ordre défini dans MACHINE_RECORD)
 	    Object[] machineAttributes = machineRow.getAttributes();
 
@@ -401,15 +420,6 @@ public class MachineDAO implements DAO<Machine>{
 	    }
 
 	    return maintenances;
-	}
-
-
-
-	
-	@Override
-	public Machine find() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 	
 	@Override

@@ -2,7 +2,7 @@ package be.alb_mar_hen.enumerations;
 
 public enum MaintenanceStatus {
 	IN_PROGRESS, 
-	DONE, 
+	DONE,
 	PENDING_VALIDATION; 
 	
 	public static MaintenanceStatus fromString(String status) {
@@ -19,6 +19,8 @@ public enum MaintenanceStatus {
             case "2":
                 return MaintenanceStatus.DONE; 
 			case "PENDING_VALIDATION":
+				return MaintenanceStatus.PENDING_VALIDATION;
+			case "3":
 				return MaintenanceStatus.PENDING_VALIDATION;
             default:
                 throw new IllegalArgumentException("Unknown value for MaintenanceStatus: " + status);

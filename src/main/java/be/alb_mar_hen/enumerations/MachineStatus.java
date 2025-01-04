@@ -20,6 +20,8 @@ public enum MachineStatus {
 	            return TO_BE_REPLACED;
 	        case "5":
 	        	return REPLACED;
+	        case "6":
+	        	return NEED_VALIDATION;
 	        default:
 	            return TO_BE_REPLACED;
 	    }
@@ -38,7 +40,7 @@ public enum MachineStatus {
 		case 5:
 			return REPLACED;
 		case 6:
-			return NEED_VALIDATION;
+            return NEED_VALIDATION;
 		default:
 			return TO_BE_REPLACED;
 		}

@@ -30,6 +30,7 @@ import be.alb_mar_hen.javabeans.Maintenance;
 import be.alb_mar_hen.javabeans.MaintenanceResponsable;
 import be.alb_mar_hen.javabeans.MaintenanceWorker;
 import be.alb_mar_hen.javabeans.Zone;
+import be.alb_mar_hen.utils.Conversion;
 import be.alb_mar_hen.validators.DateValidator;
 import be.alb_mar_hen.validators.NumericValidator;
 import be.alb_mar_hen.validators.ObjectValidator;
@@ -172,13 +173,17 @@ public class MaintenanceDAO implements DAO<Maintenance>{
 					//Maintenance
 		        	int maintenanceId = ((BigDecimal) attributes[0]).intValue();
 	                LocalDateTime maintenanceStartDate = ((Timestamp) attributes[1]).toLocalDateTime();
-	                LocalDateTime maintenanceEndDate = ((Timestamp) attributes[2]).toLocalDateTime();
-	                int duration = ((BigDecimal) attributes[3]).intValue();
-	                String report = (String) attributes[4];
+	                
+	                Optional<LocalDateTime> maintenanceEndDate = Optional.ofNullable(Conversion.extractLocalDateTime(attributes[2]));
+					
+					Optional<Integer> duration = Optional.ofNullable((BigDecimal) attributes[3]).map(BigDecimal::intValue);
+
+					Optional<String> report = Optional.ofNullable((String) attributes[4]);
+	                
 	                int status = ((BigDecimal) attributes[5]).intValue();
 	                
 	                Maintenance maintenance = new Maintenance(Optional.of(maintenanceId), maintenanceStartDate, 
-	                		Optional.of(maintenanceEndDate), Optional.of(duration), Optional.of(report), 
+	                		maintenanceEndDate, duration, report, 
 	                		MaintenanceStatus.fromDatabaseValue(status), 
 	                		machineObj, workers.stream().findFirst().get(), responsable, new NumericValidator(), new StringValidator(), new ObjectValidator(), new DateValidator());
 		        	
@@ -323,13 +328,16 @@ public class MaintenanceDAO implements DAO<Maintenance>{
 					//Maintenance
 		        	int maintenanceId = ((BigDecimal) attributes[0]).intValue();
 	                LocalDateTime maintenanceStartDate = ((Timestamp) attributes[1]).toLocalDateTime();
-	                LocalDateTime maintenanceEndDate = ((Timestamp) attributes[2]).toLocalDateTime();
-	                int duration = ((BigDecimal) attributes[3]).intValue();
-	                String report = (String) attributes[4];
+	                Optional<LocalDateTime> maintenanceEndDate = Optional.ofNullable(Conversion.extractLocalDateTime(attributes[2]));
+					
+					Optional<Integer> duration = Optional.ofNullable((BigDecimal) attributes[3]).map(BigDecimal::intValue);
+
+					Optional<String> report = Optional.ofNullable((String) attributes[4]);
+
 	                int status = ((BigDecimal) attributes[5]).intValue();
 	                
 	                Maintenance maintenance = new Maintenance(Optional.of(maintenanceId), maintenanceStartDate, 
-	                		Optional.of(maintenanceEndDate), Optional.of(duration), Optional.of(report), 
+	                		maintenanceEndDate, duration, report, 
 	                		MaintenanceStatus.fromDatabaseValue(status), 
 	                		machineObj, workers.stream().findFirst().get(), responsable, new NumericValidator(), new StringValidator(), new ObjectValidator(), new DateValidator());
 		        	
@@ -351,7 +359,7 @@ public class MaintenanceDAO implements DAO<Maintenance>{
 
 
 	@Override
-	public Maintenance find() {
+	public Maintenance find(int id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -370,7 +378,21 @@ public class MaintenanceDAO implements DAO<Maintenance>{
 
 	@Override
 	public boolean update(Maintenance object) {
-		// TODO Auto-generated method stub
-		return false;
+		try {
+			CallableStatement stmt = connection.prepareCall("{ ? = call Pkg_maintenances.finalize_maintenance(?, ?) }");
+			
+			stmt.registerOutParameter(1, OracleTypes.INTEGER);
+			stmt.setInt(2, object.getId().get());
+			stmt.setString(3, object.getReport().get());
+			
+			stmt.execute();
+			
+			System.out.println("Nombre de lignes affectées  : " + stmt.getInt(1));
+			
+			return stmt.getInt(1) == 1;	
+		}catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 }

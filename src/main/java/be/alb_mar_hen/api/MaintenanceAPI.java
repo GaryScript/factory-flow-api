@@ -2,7 +2,9 @@ package be.alb_mar_hen.api;
 
 import java.util.List;
 
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.PUT;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
@@ -32,12 +34,12 @@ public class MaintenanceAPI {
 	        
 	        String jsonString = objectMapper.writeValueAsString(maintenances);
 	        
-	        System.out.println("Json : " + jsonString);
-	        
 			return Response.status(Status.OK)
 					.entity(jsonString)
 					.build();
+			
 		}catch (Exception e) {
+			e.printStackTrace();
 			return Response
 					.status(Status.INTERNAL_SERVER_ERROR)
 					.build();
@@ -48,18 +50,48 @@ public class MaintenanceAPI {
 	@Path("/{workerid}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getMaintenanceByWorkerId(@PathParam("workerid") int workerId) {
+		if(workerId <= 0) {
+            return Response.status(Status.BAD_REQUEST).build();
+        }
+		
 		try {
 			List<Maintenance> maintenances = maintenanceDAO.findall(workerId);
 
 			ObjectMapper objectMapper = new ObjectMapper();
 			objectMapper.registerModule(new Jdk8Module());
-
+			
 			String jsonString = objectMapper.writeValueAsString(maintenances);
 
-			System.out.println("Json : " + jsonString);
+			System.out.println("Json dans get for worker id: " + jsonString);
 
 			return Response.status(Status.OK).entity(jsonString).build();
 		} catch (Exception e) {
+			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+	
+	@PUT
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response updateMaintenance(String maintenanceJson) {
+		if (maintenanceJson == null) {
+			return Response.status(Status.BAD_REQUEST).build();
+		}	
+		
+		try {
+			ObjectMapper objectMapper = new ObjectMapper();
+			objectMapper.registerModule(new Jdk8Module());
+			
+			System.out.println("JSON DANS PUT : " + maintenanceJson);
+			
+			Maintenance maintenance = objectMapper.readValue(maintenanceJson, Maintenance.class);
+
+			if(maintenanceDAO.update(maintenance)) {
+				return Response.status(Status.OK).build();
+            }else {
+            	return Response.status(Status.INTERNAL_SERVER_ERROR).build();
+            }
+		} catch (Exception e) {
+			e.printStackTrace();
 			return Response.status(Status.INTERNAL_SERVER_ERROR).build();
 		}
 	}
