@@ -86,7 +86,8 @@ public class MachineAPI {
         try {
             Collection<Machine> machines = machineDAO.findAll_terry();
             
-			if (machines.isEmpty()) {
+            ObjectValidator objValidator = new ObjectValidator();
+			if (!objValidator.hasValue(objValidator) ||  machines.isEmpty()) {
 				return RequestFactory.createNotFoundResponse("No machines found.");
 			}
 

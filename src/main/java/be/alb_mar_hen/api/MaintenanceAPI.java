@@ -27,7 +27,7 @@ public class MaintenanceAPI {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getMaintenance() {
 		try {
-			List<Maintenance> maintenances = maintenanceDAO.findall();
+			List<Maintenance> maintenances = maintenanceDAO.findAll();
 			
 	        ObjectMapper objectMapper = new ObjectMapper();
 	        objectMapper.registerModule(new Jdk8Module());

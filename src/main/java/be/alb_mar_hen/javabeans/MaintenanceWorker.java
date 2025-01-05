@@ -1,13 +1,16 @@
 package be.alb_mar_hen.javabeans;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
+import be.alb_mar_hen.daos.MaintenanceWorkerDAO;
 import be.alb_mar_hen.formatters.StringFormatter;
 import be.alb_mar_hen.javabeans.Employee;
 import be.alb_mar_hen.javabeans.Maintenance;
@@ -23,11 +26,15 @@ public class MaintenanceWorker extends Employee implements Serializable{
 	// Validators
 	private ObjectValidator objectValidator;
 	
+	// Attributes
+	private Set<Maintenance> maintenances;
+	
 	
 	// Constructors
 	public MaintenanceWorker() {
 		super();
 		objectValidator = new ObjectValidator();
+		maintenances = new HashSet<Maintenance>();
 	}
 	
 	public MaintenanceWorker(
@@ -43,8 +50,28 @@ public class MaintenanceWorker extends Employee implements Serializable{
 	) {
 		super(id, matricule, password, firstName, lastName, stringValidator, numericValidator, objectValidator, stringFormatter);
 		this.objectValidator = objectValidator;
+		this.maintenances = new HashSet<Maintenance>();
 	}
 	
+	// Getters
+    public Set<Maintenance> getMaintenances() {
+        return maintenances;
+    }
+
+    // Methods
+    public boolean addMaintenance(Maintenance maintenance) {
+        if (!objectValidator.hasValue(maintenance)) {
+            throw new IllegalArgumentException("maintenance must have value.");
+        }
+
+        maintenance.addMaintenanceWorker(this);
+        return maintenances.add(maintenance);
+    }
+    
+    // Static methods
+	public static List<MaintenanceWorker> getMaintenancesFromDatabase(MaintenanceWorkerDAO maintenanceWorkerDAO) {
+		return maintenanceWorkerDAO.findAll();
+	}
 
 	// Override methods
 	@Override

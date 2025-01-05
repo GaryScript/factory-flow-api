@@ -15,7 +15,7 @@ public class PurchasingAgentDAO implements DAO<PurchasingAgent>{
 	}
 
 	@Override
-	public List<PurchasingAgent> findall() {
+	public List<PurchasingAgent> findAll() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -15,7 +15,7 @@ public class ZoneDAO implements DAO<Zone>{
 	}
 
 	@Override
-	public List<Zone> findall() {
+	public List<Zone> findAll() {
 		// TODO Auto-generated method stub
 		return null;
 	}

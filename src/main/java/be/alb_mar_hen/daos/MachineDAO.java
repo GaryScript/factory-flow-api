@@ -50,7 +50,7 @@ public class MachineDAO implements DAO<Machine>{
 	}
 	
 	@Override
-	public List<Machine> findall() throws SQLException {
+	public List<Machine> findAll() throws SQLException {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -147,7 +147,7 @@ public class MachineDAO implements DAO<Machine>{
 
 
 
-	private Set<Zone> getZonesFromResultSet_terry(Object zonesArray, Object siteArray) throws SQLException {
+	Set<Zone> getZonesFromResultSet_terry(Object zonesArray, Object siteArray) throws SQLException {
 	    Set<Zone> zones = new HashSet<>();
 
 	    // Site
@@ -169,16 +169,18 @@ public class MachineDAO implements DAO<Machine>{
 	            String zoneName = (String) zoneData[1];
 	            ZoneColor zoneColor = ZoneColor.fromDatabaseValue(((BigDecimal) zoneData[2]).intValue());;
 
-	            zones.add(new Zone(
-	                Optional.of(zoneId),
-	                zoneColor,
-	                zoneName,
-	                Optional.of(siteId),
-	                siteCity,
-	                new NumericValidator(),
-	                new ObjectValidator(),
-	                new StringValidator()
-	            ));
+	            zones.add(
+            		new Zone(
+		                Optional.of(zoneId),
+		                zoneColor,
+		                zoneName,
+		                Optional.of(siteId),
+		                siteCity,
+		                new NumericValidator(),
+		                new ObjectValidator(),
+		                new StringValidator()
+            		)
+            	);
 	        }
 	    }
 

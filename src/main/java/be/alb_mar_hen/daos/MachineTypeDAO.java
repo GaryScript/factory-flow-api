@@ -15,7 +15,7 @@ public class MachineTypeDAO implements DAO<MachineType>{
 	}
 	
 	@Override
-	public List<MachineType> findall() {
+	public List<MachineType> findAll() {
 		// TODO Auto-generated method stub
 		return null;
 	}
