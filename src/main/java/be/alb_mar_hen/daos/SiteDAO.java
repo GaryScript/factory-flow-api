@@ -15,7 +15,7 @@ public class SiteDAO implements DAO<Site>{
 	}
 
 	@Override
-	public List<Site> findall() {
+	public List<Site> findAll() {
 		// TODO Auto-generated method stub
 		return null;
 	}

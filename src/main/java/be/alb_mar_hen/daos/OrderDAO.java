@@ -38,7 +38,7 @@ public class OrderDAO implements DAO<Order>{
 	}
 	
 	@Override
-	public List<Order> findall() throws SQLException {
+	public List<Order> findAll() throws SQLException {
 	    String sql = "BEGIN ? := PKG_ORDERS.get_orders(); END;"; 
 	    List<Order> orders = new ArrayList<>();
 

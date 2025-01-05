@@ -15,7 +15,7 @@ public class SupplierDAO implements DAO<Supplier>{
 	}
 	
 	@Override
-	public List<Supplier> findall() {
+	public List<Supplier> findAll() {
 		// TODO Auto-generated method stub
 		return null;
 	}
