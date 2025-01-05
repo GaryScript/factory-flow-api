@@ -47,20 +47,20 @@ public class MaintenanceAPI {
     }
 	
 	@GET
-	@Path("/{workerid}")
+	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getMaintenanceByWorkerId(@PathParam("workerid") int workerId) {
-		if(workerId <= 0) {
+	public Response getMaintenanceByWorkerId(@PathParam("id") int id) {
+		if(id <= 0) {
             return Response.status(Status.BAD_REQUEST).build();
         }
 		
 		try {
-			List<Maintenance> maintenances = maintenanceDAO.findall(workerId);
+			Maintenance maintenance = maintenanceDAO.find(id);
 
 			ObjectMapper objectMapper = new ObjectMapper();
 			objectMapper.registerModule(new Jdk8Module());
 			
-			String jsonString = objectMapper.writeValueAsString(maintenances);
+			String jsonString = objectMapper.writeValueAsString(maintenance);
 
 			return Response.status(Status.OK).entity(jsonString).build();
 		} catch (Exception e) {
