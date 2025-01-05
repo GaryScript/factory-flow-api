@@ -204,13 +204,8 @@ public class MaintenanceWorkerDAO implements DAO<MaintenanceWorker>{
 	        new StringFormatter()
 	    );
 	}
-
-	@Override
-	public MaintenanceWorker find(int id) {
-		return null; 
-	}
 	
-	/*@Override
+	@Override
 	public MaintenanceWorker find(int id) {
 		String query = "BEGIN ? := PKG_MAINTENANCE_WORKERS_TERRY.get_maintenance_worker(?); END;";
 		MaintenanceWorker maintenanceWorker = null;
@@ -221,7 +216,7 @@ public class MaintenanceWorkerDAO implements DAO<MaintenanceWorker>{
 			stmt.execute();
 			
 			Struct maintenanceWorkerRow = (Struct) stmt.getObject(1);
-			maintenanceWorker = getMaitenanceWorkerFromResultSet(maintenanceWorkerRow);
+			maintenanceWorker = parseMaintenanceWorker(maintenanceWorkerRow);
 			
 		} catch (Exception e) {
             e.printStackTrace();
@@ -229,7 +224,7 @@ public class MaintenanceWorkerDAO implements DAO<MaintenanceWorker>{
         }
 		
 		return maintenanceWorker;
-	}*/
+	}
 
 	@Override
 	public int create(MaintenanceWorker object) {
