@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -41,6 +42,28 @@ public class MaintenanceWorkerAPI {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return RequestFactory.createServerErrorResponse("Error processing the maintenance worker. " + e.getMessage());
+		}
+	}
+	
+	@GET
+	@Path("/{id}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getMaintenanceWorker(@PathParam("id") int workerid) {
+		if(workerid <= 0) {
+			return RequestFactory.createBadRequestResponse("Invalid maintenance worker id.");
+		}
+		
+		try {
+			MaintenanceWorker maintenanceWorker = MaintenanceWorker.getMaintenanceWorkerFromDatabase(workerid, maintenanceWorkerDAO);
+			
+			ObjectMapper objectMapper = new ObjectMapper();
+			objectMapper.registerModule(new Jdk8Module());
+			
+			String maintenanceWorkerJson = objectMapper.writeValueAsString(maintenanceWorker);
+			
+			return RequestFactory.createOkResponse(maintenanceWorkerJson);
+		} catch (Exception e) {
+            return RequestFactory.createServerErrorResponse("Error processing the maintenance worker. " + e.getMessage());
 		}
 	}
 }

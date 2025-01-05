@@ -7,6 +7,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Struct;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -19,6 +21,7 @@ import be.alb_mar_hen.enumerations.MaintenanceStatus;
 import be.alb_mar_hen.enumerations.ZoneColor;
 import be.alb_mar_hen.formatters.StringFormatter;
 import be.alb_mar_hen.javabeans.Machine;
+import be.alb_mar_hen.javabeans.MachineType;
 import be.alb_mar_hen.javabeans.Maintenance;
 import be.alb_mar_hen.javabeans.MaintenanceResponsable;
 import be.alb_mar_hen.javabeans.MaintenanceWorker;
@@ -224,11 +227,26 @@ public class MaintenanceWorkerDAO implements DAO<MaintenanceWorker>{
 		// TODO
 		return null;
 	}
-
+	
 	@Override
 	public MaintenanceWorker find(int id) {
-		// TODO Auto-generated method stub
-		return null;
+		String query = "BEGIN ? := PKG_MAINTENANCE_WORKERS_TERRY.get_maintenance_worker(?); END;";
+		MaintenanceWorker maintenanceWorker = null;
+		
+		try (CallableStatement stmt = connection.prepareCall(query)) {
+			stmt.registerOutParameter(1, OracleTypes.STRUCT, "PKG_MAINTENANCE_WORKERS_TERRY.MAINTENANCE_WORKER_RECORD");
+			stmt.setInt(2, id);
+			stmt.execute();
+			
+			Struct maintenanceWorkerRow = (Struct) stmt.getObject(1);
+			maintenanceWorker = getMaitenanceWorkerFromResultSet(maintenanceWorkerRow);
+			
+		} catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("Error processing the maintenance workers. " + e.getMessage());
+        }
+		
+		return maintenanceWorker;
 	}
 
 	@Override

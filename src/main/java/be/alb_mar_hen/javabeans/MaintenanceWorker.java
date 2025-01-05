@@ -22,13 +22,10 @@ import be.alb_mar_hen.validators.StringValidator;
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "keyMaintenanceWorker")
 public class MaintenanceWorker extends Employee implements Serializable{
 	private static final long serialVersionUID = -5505070112612987755L;
-
-	// Validators
-	private ObjectValidator objectValidator;
-	
-	// Attributes
 	private Set<Maintenance> maintenances;
 	
+	// Validators
+	private ObjectValidator objectValidator;
 	
 	// Constructors
 	public MaintenanceWorker() {
@@ -72,7 +69,15 @@ public class MaintenanceWorker extends Employee implements Serializable{
 	public static List<MaintenanceWorker> getMaintenancesFromDatabase(MaintenanceWorkerDAO maintenanceWorkerDAO) {
 		return maintenanceWorkerDAO.findAll();
 	}
-
+	
+	public static MaintenanceWorker getMaintenanceWorkerFromDatabase(int id, MaintenanceWorkerDAO dao) {
+		return dao.find(id);
+	}
+    
+    public static MaintenanceWorker find(MaintenanceWorkerDAO dao, int id) {
+    	return dao.find(id);
+    }
+	
 	// Override methods
 	@Override
 	public String toString() {
@@ -92,4 +97,5 @@ public class MaintenanceWorker extends Employee implements Serializable{
 	public int hashCode() {
 		return super.hashCode();
 	}
+	
 }
