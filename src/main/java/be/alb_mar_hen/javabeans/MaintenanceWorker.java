@@ -27,10 +27,6 @@ public class MaintenanceWorker extends Employee implements Serializable{
 	// Validators
 	private ObjectValidator objectValidator;
 	
-	// Attributes
-	private Set<Maintenance> maintenances;
-	
-	
 	// Constructors
 	public MaintenanceWorker() {
 		super();
@@ -73,25 +69,10 @@ public class MaintenanceWorker extends Employee implements Serializable{
 	public static List<MaintenanceWorker> getMaintenancesFromDatabase(MaintenanceWorkerDAO maintenanceWorkerDAO) {
 		return maintenanceWorkerDAO.findAll();
 	}
-
-    public MaintenanceWorker() {
-        super();
-        this.objectValidator = new ObjectValidator();
-        this.maintenances = new HashSet<Maintenance>();
-    }
-    
-    // Methods
-    public boolean addMaintenance(Maintenance maintenance) {
-        if (!objectValidator.hasValue(maintenance)) {
-            throw new IllegalArgumentException("maintenance must have value.");
-        }
-
-        /*if (!maintenance.addMaintenanceWorker(this)) {
-            return false;
-        }*/
-
-        return maintenances.add(maintenance);
-    }
+	
+	public static MaintenanceWorker getMaintenanceWorkerFromDatabase(int id, MaintenanceWorkerDAO dao) {
+		return dao.find(id);
+	}
     
     public static MaintenanceWorker find(MaintenanceWorkerDAO dao, int id) {
     	return dao.find(id);
@@ -117,8 +98,4 @@ public class MaintenanceWorker extends Employee implements Serializable{
 		return super.hashCode();
 	}
 	
-	//Getters
-	public Set<Maintenance> getMaintenances() {
-        return maintenances;
-    }
 }

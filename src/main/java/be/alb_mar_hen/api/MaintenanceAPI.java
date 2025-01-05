@@ -49,7 +49,7 @@ public class MaintenanceAPI {
 	@GET
 	@Path("/{id}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getMaintenanceByWorkerId(@PathParam("id") int id) {
+	public Response getMaintenance(@PathParam("id") int id) {
 		if(id <= 0) {
             return Response.status(Status.BAD_REQUEST).build();
         }
