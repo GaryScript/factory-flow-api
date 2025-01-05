@@ -15,7 +15,7 @@ public class MaintenanceResponsableDAO implements DAO<MaintenanceResponsable>{
 	}
 
 	@Override
-	public List<MaintenanceResponsable> findall() {
+	public List<MaintenanceResponsable> findAll() {
 		// TODO Auto-generated method stub
 		return null;
 	}

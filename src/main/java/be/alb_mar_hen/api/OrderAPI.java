@@ -27,7 +27,7 @@ public class OrderAPI {
 	    try {
 	        Connection connection = FactoryFlowConnection.getInstance();
 	        OrderDAO orderDAO = new OrderDAO(connection);
-	        List<Order> orders = orderDAO.findall();
+	        List<Order> orders = orderDAO.findAll();
 	        
 	        if (orders.isEmpty()) {
 	            return Response.status(Response.Status.NOT_FOUND.getStatusCode(), "No orders found.").build();

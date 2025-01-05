@@ -1,7 +1,9 @@
 package be.alb_mar_hen.javabeans;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -25,22 +27,52 @@ public class MaintenanceWorker extends Employee implements Serializable{
 	// Validators
 	private ObjectValidator objectValidator;
 	
+	// Attributes
+	private Set<Maintenance> maintenances;
+	
+	
 	// Constructors
-    public MaintenanceWorker(
-        Optional<Integer> id, 
-        String matricule, 
-        String password,
-        String firstName,
-        String lastName,
-        StringValidator stringValidator, 
-        NumericValidator numericValidator,
-        StringFormatter stringFormatter,
-        ObjectValidator objectValidator
-    ) {
-        super(id, matricule, password, firstName, lastName, stringValidator, numericValidator, objectValidator, stringFormatter);
-        this.objectValidator = objectValidator;
-        this.maintenances = new HashSet<Maintenance>();
+	public MaintenanceWorker() {
+		super();
+		objectValidator = new ObjectValidator();
+		maintenances = new HashSet<Maintenance>();
+	}
+	
+	public MaintenanceWorker(
+		Optional<Integer> id, 
+		String matricule, 
+		String password,
+		String firstName,
+		String lastName,
+		StringValidator stringValidator, 
+		NumericValidator numericValidator,
+		StringFormatter stringFormatter,
+		ObjectValidator objectValidator
+	) {
+		super(id, matricule, password, firstName, lastName, stringValidator, numericValidator, objectValidator, stringFormatter);
+		this.objectValidator = objectValidator;
+		this.maintenances = new HashSet<Maintenance>();
+	}
+	
+	// Getters
+    public Set<Maintenance> getMaintenances() {
+        return maintenances;
     }
+
+    // Methods
+    public boolean addMaintenance(Maintenance maintenance) {
+        if (!objectValidator.hasValue(maintenance)) {
+            throw new IllegalArgumentException("maintenance must have value.");
+        }
+
+        maintenance.addMaintenanceWorker(this);
+        return maintenances.add(maintenance);
+    }
+    
+    // Static methods
+	public static List<MaintenanceWorker> getMaintenancesFromDatabase(MaintenanceWorkerDAO maintenanceWorkerDAO) {
+		return maintenanceWorkerDAO.findAll();
+	}
 
     public MaintenanceWorker() {
         super();

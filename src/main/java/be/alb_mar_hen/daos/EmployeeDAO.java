@@ -72,7 +72,7 @@ public class EmployeeDAO implements DAO<Employee>{
     }
 	
 	@Override
-	public List<Employee> findall() {
+	public List<Employee> findAll() {
 		// TODO Auto-generated method stub
 		return null;
 	}

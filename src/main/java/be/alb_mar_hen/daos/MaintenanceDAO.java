@@ -49,7 +49,7 @@ public class MaintenanceDAO implements DAO<Maintenance>{
 	}
 	
 	@Override
-	public List<Maintenance> findall() {
+	public List<Maintenance> findAll() {
 		 List<Maintenance> maintenancesList = new ArrayList<>();
 
 		    try {
