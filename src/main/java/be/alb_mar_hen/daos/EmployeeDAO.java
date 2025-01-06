@@ -56,9 +56,11 @@ public class EmployeeDAO implements DAO<Employee>{
             	    stringFormatter
             	);
             
+            System.out.println("end of dao authenticate");
             return concreteEmployee;
             
         } catch (SQLException e) {
+        	System.out.println("SQLException: " + e.getMessage());
             if (e.getErrorCode() == 20001) {
                 throw new SQLException("Invalid matricule or password.", e);
             } else if (e.getErrorCode() == 20002) {
@@ -68,6 +70,7 @@ public class EmployeeDAO implements DAO<Employee>{
             }
         } finally {
             if (stmt != null) stmt.close();
+            System.out.println("finally authenticate dao");
         }
     }
 	

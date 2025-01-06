@@ -118,7 +118,7 @@ public class MaintenanceWorkerDAO implements DAO<MaintenanceWorker>{
 	        Optional.of(((BigDecimal) maintenanceData[0]).intValue()),                			// maintenance_id
 	        Conversion.extractLocalDateTime(maintenanceData[1]),                      			// start_date
 	        Optional.ofNullable(Conversion.extractLocalDateTime(maintenanceData[2])), 			// end_date
-	        Optional.ofNullable(((BigDecimal) maintenanceData[3]).intValue()),        			// duration
+	        Optional.ofNullable((BigDecimal) maintenanceData[3]).map(BigDecimal::intValue),     // duration
 	        Optional.ofNullable((String) maintenanceData[4]),                                   // report
 	        MaintenanceStatus.fromDatabaseValue(((BigDecimal) maintenanceData[5]).intValue()),  // status
 	        parseMachine(machineStruct, machineTypeStruct, zonesArray, siteStruct), 			// machine
@@ -170,7 +170,6 @@ public class MaintenanceWorkerDAO implements DAO<MaintenanceWorker>{
 	        while (rsZones.next()) {
 	            Struct zoneStruct = (Struct) rsZones.getObject(2);
 	            Object[] zoneData = zoneStruct.getAttributes();
-	            System.out.println("zoneData: " + zoneData[1]);
 	            zones.add(
             		new Zone(
 		                Optional.of(((BigDecimal) zoneData[0]).intValue()), 				// zone_id

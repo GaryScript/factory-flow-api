@@ -116,7 +116,9 @@ public class MachineAPI {
 			ObjectMapper objectMapper = new ObjectMapper();
 			objectMapper.registerModule(new Jdk8Module());
 
+			System.out.println("machineJson: " + machineJson);
 			Machine machine = objectMapper.readValue(machineJson, Machine.class);
+			System.out.println("machine: " + machine);
 			boolean isMachineUpdated = machine.updateInDatabase(machineDAO);
 			if (!isMachineUpdated)
                 return RequestFactory.createServerErrorResponse("Failed to update machine status.");

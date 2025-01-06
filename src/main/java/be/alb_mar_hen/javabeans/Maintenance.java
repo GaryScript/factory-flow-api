@@ -36,13 +36,15 @@ public class Maintenance implements Serializable{
 	private DateValidator dateValidator;
 	
 	// Attributes
-	@JsonInclude(JsonInclude.Include.NON_ABSENT)
+	@JsonDeserialize(using = be.alb_mar_hen.utils.OptionalIntegerDeserializer.class)
 	private Optional<Integer> id;
 	@JsonDeserialize(using = CustomDateDeserializer.class)
 	private LocalDateTime startDateTime;
 	@JsonDeserialize(using = OptionalLocalDateTimeDeserializer.class)
 	private Optional<LocalDateTime> endDateTime;
+	@JsonDeserialize(using = be.alb_mar_hen.utils.OptionalIntegerDeserializer.class)
 	private Optional<Integer> duration;
+	@JsonDeserialize(using = be.alb_mar_hen.utils.OptionalStringDeserializer.class)
 	private Optional<String> report;
 	private MaintenanceStatus status;
 	
@@ -164,19 +166,19 @@ public class Maintenance implements Serializable{
 	// Setters
 	public void setId(Optional<Integer> id) {
 		if (!objectValidator.hasValue(id)) {
-			throw new NullPointerException("Id must have a value.");
+			this.id = Optional.empty();
+		} else {
+			if (!numericValidator.isPositiveOrEqualToZero(id)) {
+				throw new IllegalArgumentException("Id must be greater than 0");
+			}
+			
+			this.id = id;			
 		}
-		
-		if (!numericValidator.isPositiveOrEqualToZero(id)) {
-			throw new IllegalArgumentException("Id must be greater than 0");
-		}
-		
-		this.id = id;
 	}
 	
 	public void setStartDateTime(LocalDateTime startDateTime) {
 		if(!objectValidator.hasValue(startDateTime)) {
-			throw new NullPointerException("Date must have a value.");
+			throw new NullPointerException("Start date must have a value.");
 		}
 		
 		if(!dateValidator.isInPast(startDateTime)) {
@@ -187,39 +189,35 @@ public class Maintenance implements Serializable{
 	}
 	
 	public void setEndDateTime(Optional<LocalDateTime> endDateTime) {
-		if(!objectValidator.hasValue(endDateTime)) {
-			throw new NullPointerException("Date must have a value.");
+		if(!objectValidator.hasValue(endDateTime) || endDateTime.isEmpty()) {
+			this.endDateTime = Optional.empty();
+		} else {
+			if (endDateTime.get().isBefore(startDateTime)) {
+				throw new IllegalArgumentException("End date must be after start date.");
+			}
+			
+			this.endDateTime = endDateTime;
 		}
-		
-		if(!dateValidator.isInPast(endDateTime)) {
-			throw new IllegalArgumentException("Date must be in the past.");
-		}
-		
-		this.endDateTime = endDateTime;
 	}
 	
 	public void setDuration(Optional<Integer> duration) {
 		if (!objectValidator.hasValue(duration)) {
-			throw new NullPointerException("Duration must have a value.");
+			this.duration = Optional.empty();
+		} else {
+			this.duration = duration;			
 		}
-		
-		if(!numericValidator.isPositive(duration)) {
-			throw new IllegalArgumentException("Duration must be positive.");
-		}
-		
-		this.duration = duration;
 	}
 	
 	public void setReport(Optional<String> report) {
 		if(!objectValidator.hasValue(report)) {
-			throw new NullPointerException("Report must have a value.");
+			this.report = Optional.empty();
+		} else {
+			if(!stringValidator.isLongerOrEqualsThan(report, MIN_LENGTH_REPORT)) {
+				throw new IllegalArgumentException("Report must be at least " + MIN_LENGTH_REPORT + " long.");
+			}
+			
+			this.report = report;			
 		}
-		
-		if(!stringValidator.isLongerOrEqualsThan(report, MIN_LENGTH_REPORT)) {
-			throw new IllegalArgumentException("Report must be at least " + MIN_LENGTH_REPORT + " long.");
-		}
-		
-		this.report = report;
 	}
 	
 	public void setStatus(MaintenanceStatus status) {
@@ -274,6 +272,10 @@ public class Maintenance implements Serializable{
 	
 	public boolean updateInDatabase(MaintenanceDAO dao) {
 		return dao.update(this);
+	}
+	
+	public int insertInDatabase(MaintenanceDAO dao) {
+		return dao.create(this);
 	}
 	
 	//Override methods

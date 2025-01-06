@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://xmlns.jcp.org/xml/ns/javaee" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd" version="4.0">
+  <display-name>Factory-flow-api</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  
+  <!-- Database connection parameters -->
+  <context-param>
+	<param-name>url</param-name>
+	<param-value>jdbc:oracle:thin:@//193.190.64.10:1522/xepdb1?useUnicode=true&amp;characterEncoding=UTF-8&amp;defaultNChar=true</param-value>
+  </context-param>
+  <context-param>
+	<param-name>username</param-name>
+	<param-value>STUDENT03_05</param-value>
+  </context-param>
+  <context-param>
+	<param-name>password</param-name>
+	<param-value>dontchangeme</param-value>
+  </context-param>
+  <context-param>
+	<param-name>driver</param-name>
+	<param-value>oracle.jdbc.driver.OracleDriver</param-value>
+  </context-param>
+
+</web-app>
