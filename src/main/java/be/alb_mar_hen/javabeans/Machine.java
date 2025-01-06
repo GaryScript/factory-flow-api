@@ -145,7 +145,7 @@ public class Machine implements Serializable{
 	// Setters
 	public void setId(Optional<Integer> id) {
 		if (!objectValidator.hasValue(id)) {
-			throw new NullPointerException("Id must have a value.");
+			this.id = Optional.empty();
 		}
 		
 	    if (!numericValidator.isPositiveOrEqualToZero(id)) {

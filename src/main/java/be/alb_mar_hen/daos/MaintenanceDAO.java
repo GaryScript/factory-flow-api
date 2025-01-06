@@ -38,6 +38,8 @@ import be.alb_mar_hen.validators.StringValidator;
 import oracle.jdbc.OracleCallableStatement;
 import oracle.jdbc.internal.OracleTypes;
 import oracle.jdbc.oracore.OracleType;
+import oracle.sql.ARRAY;
+import oracle.sql.ArrayDescriptor;
 
 public class MaintenanceDAO implements DAO<Maintenance>{
 	private Connection connection = null;
@@ -518,8 +520,56 @@ public class MaintenanceDAO implements DAO<Maintenance>{
 
 
 	@Override
-	public int create(Maintenance object) {
-		// TODO Auto-generated method stub
+	public int create(Maintenance maintenance) {
+		System.out.println("Maintenance DAO API" + maintenance);
+		try {
+			// Collection de maintenance worker ids
+			Collection<Integer> workerIds = 
+				maintenance
+					.getMaintenanceWorkers()
+					.stream()
+					.map(w -> w.getId().get())
+					.toList();
+			
+			// Créer un descripteur pour le type ARRAY défini dans Oracle
+		    ArrayDescriptor descriptor = ArrayDescriptor.createDescriptor("PKG_MAINTENANCES.MAINTENANCE_WORKER_IDS", connection);
+
+		    // Créer l'objet ARRAY avec les données
+		    ARRAY workerIdsArray = new ARRAY(descriptor, connection, workerIds.toArray());
+			for (Integer integer : workerIds) {
+				System.out.println("Worker id : " + integer);
+			}
+			CallableStatement stmt = connection.prepareCall(
+				"BEGIN ? := PKG_MAINTENANCES.insert_maintenance(?, ?, ?, ?, ?, ?, ?, ?);  END;"
+			);
+			
+			stmt.registerOutParameter(1, OracleTypes.INTEGER);
+			stmt.setTimestamp(2, Timestamp.valueOf(maintenance.getStartDateTime()));
+			stmt.setTimestamp(
+				3, 
+				maintenance.getEndDateTime().isPresent() 
+					? Timestamp.valueOf(maintenance.getEndDateTime().get()) 
+					: null
+			);
+			stmt.setObject(4, maintenance.getDuration().orElse(null), java.sql.Types.INTEGER);
+			stmt.setString(5, maintenance.getReport().orElse(null));
+			System.out.println("maintenance status : " + maintenance.getStatus().ordinal() + 1);
+			stmt.setInt(6, maintenance.getStatus().ordinal() + 1);
+			stmt.setInt(7, maintenance.getMachine().getId().get());
+			System.out.println("maintenance responsable id : " + maintenance.getMaintenanceResponsable().getId().get());
+			stmt.setInt(8, maintenance.getMaintenanceResponsable().getId().get());
+			stmt.setArray(9, workerIdsArray);
+			
+			stmt.execute();
+			
+			int maintenanceId = stmt.getInt(1);
+			System.out.println("Maintenance id : " + maintenanceId);
+			
+			return maintenanceId;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
 		return 0;
 	}
 
@@ -538,8 +588,9 @@ public class MaintenanceDAO implements DAO<Maintenance>{
 			stmt.setInt(2, object.getId().get());
 			stmt.setTimestamp(3, Timestamp.valueOf(object.getStartDateTime()));
 			stmt.setTimestamp(4, object.getEndDateTime().isPresent() ? Timestamp.valueOf(object.getEndDateTime().get()) : null);
-			stmt.setInt(5, object.getDuration().orElse(0));
+			stmt.setObject(5, object.getDuration().orElse(null), java.sql.Types.INTEGER);
 			stmt.setString(6, object.getReport().get());
+			System.out.println("maintenance statusdzzdzdzdzd : " + object.getStatus().ordinal() + 1);
 			stmt.setInt(7, object.getStatus().ordinal() + 1);
 			
 			stmt.execute();

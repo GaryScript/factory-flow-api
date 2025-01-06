@@ -32,9 +32,16 @@ public class EmployeeAPI{
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response authenticateUser(String jsonInput) {
+		System.out.println("start authenticateUser");
+		System.out.println("jsoninput: " + jsonInput);
 	    JSONObject input = new JSONObject(jsonInput);
+	    System.out.println("input: " + input);
+	    
 	    String matricule = input.optString("matricule");
 	    String password = input.optString("password");
+	    
+	    System.out.println("matricule: " + matricule);
+	    System.out.println("password: " + password);
 
 	    if (matricule.isEmpty() || password.isEmpty()) {
 	        return Response.status(Status.BAD_REQUEST)
@@ -47,12 +54,15 @@ public class EmployeeAPI{
 	        EmployeeDAO employeeDAO = new EmployeeDAO(connection);
 
 	        Employee employee = employeeDAO.authenticate(matricule, password);
-
+	        System.out.println("employee: " + employee);
 	        ObjectMapper objectMapper = new ObjectMapper();
 	        objectMapper.registerModule(new Jdk8Module()); 
 
+	        System.out.println("employee json test");
 	        String employeeJson = objectMapper.writeValueAsString(employee);
+	        System.out.println("employee json: " + employeeJson);
 	        JSONObject employeeJsonObject = new JSONObject(employeeJson);
+	        System.out.println("employee jsonobj: " + employeeJsonObject);
 	        
 	        String role = "";
 	        if (employee instanceof MaintenanceResponsable) {
